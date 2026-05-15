@@ -1,0 +1,342 @@
+<% layout('layout') -%>
+
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet"/>
+
+<style>
+  :root{
+    --bg-app:#0F1016;
+    --bg-card:#1E202D;
+    --txt-field:#778C8A;
+    --txt-light-green:#BDFFD3;
+    --txt-white-green:#E5FFF5;
+    --g-main:#39df79;
+    --g-ico:#04BF8A;
+    --r-lg:14px;
+    --r-md:10px;
+    --shadow-card:0 18px 38px rgba(0,0,0,.45);
+    --shadow-focus:0 0 0 3px rgba(72,222,141,.3);
+    --tr-fast:.15s ease;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;padding:0}
+
+  body{
+    min-height:100dvh;
+    background:var(--bg-app);
+    color:var(--txt-white-green);
+    font-family:"Asap",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .friends-overlay{
+    position:fixed;
+    inset:0;
+    background:var(--bg-app);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    z-index:9999;
+    isolation:isolate;
+    overflow-y:auto;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .friends-wrapper{
+    width:min(900px, 92vw);
+  }
+
+  .friends-card{
+    background:var(--bg-card);
+    border-radius:var(--r-lg);
+    padding:clamp(22px,4vw,34px);
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+    position:relative;
+    margin-bottom:20px;
+  }
+
+  .friends-title{
+    text-align:center;
+    font-family:"Barlow",sans-serif;
+    font-weight:700;
+    font-size:clamp(1.8rem,3vw,2.4rem);
+    color:var(--txt-white-green);
+    margin:0 0 8px 0;
+  }
+
+  .friends-subtitle{
+    text-align:center;
+    color:var(--txt-light-green);
+    opacity:.9;
+    margin:0 0 24px 0;
+    font-size:clamp(.92rem,1.9vw,1.02rem);
+  }
+
+  .section{
+    background:var(--bg-app);
+    border:1px solid rgba(229,255,245,.10);
+    border-radius:var(--r-lg);
+    padding:16px;
+    margin-bottom:16px;
+  }
+
+  .section-title{
+    font-family:"Barlow",sans-serif;
+    color:var(--txt-light-green);
+    font-weight:700;
+    letter-spacing:.2px;
+    margin:0 0 12px 0;
+    font-size:16px;
+  }
+
+  .section-content{
+    color:var(--txt-white-green);
+  }
+
+  .friend-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px;
+    background:var(--bg-card);
+    border:1px solid rgba(229,255,245,.08);
+    border-radius:var(--r-md);
+    margin-bottom:12px;
+  }
+
+  .friend-item:last-child{
+    margin-bottom:0;
+  }
+
+  .friend-info{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:1;
+  }
+
+  .avatar{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--g-main);
+  }
+
+  .avatar-placeholder{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:var(--bg-card);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid var(--g-main);
+    font-weight:700;
+    color:var(--txt-white-green);
+    font-size:18px;
+  }
+
+  .friend-details{
+    flex:1;
+  }
+
+  .friend-name{
+    color:var(--txt-white-green);
+    font-weight:600;
+    font-size:15px;
+    margin-bottom:2px;
+  }
+
+  .friend-email{
+    color:var(--txt-field);
+    font-size:13px;
+  }
+
+  .action-buttons{
+    display:flex;
+    gap:8px;
+  }
+
+  .action-link{
+    color:var(--txt-light-green);
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    transition:opacity var(--tr-fast);
+  }
+
+  .action-link:hover{
+    opacity:.8;
+  }
+
+  .btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    border-radius:999px;
+    padding:10px 16px;
+    font-family:"Atkinson Hyperlegible",sans-serif;
+    font-weight:700;
+    letter-spacing:.4px;
+    transition:transform .06s ease,box-shadow .2s ease,filter .2s ease;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    text-decoration:none;
+    font-size:14px;
+  }
+
+  .btn--accept{
+    background:#10b981;
+    color:#fff;
+    border:1px solid rgba(16,185,129,.45);
+    box-shadow:0 8px 16px rgba(16,185,129,.28);
+  }
+
+  .btn--accept:hover{
+    background:#059669;
+  }
+
+  .btn--reject{
+    background:#ef4444;
+    color:#fff;
+    border:1px solid rgba(239,68,68,.45);
+    box-shadow:0 8px 16px rgba(239,68,68,.28);
+  }
+
+  .btn--reject:hover{
+    background:#dc2626;
+  }
+
+  .btn--danger{
+    color:#ef4444;
+    background:transparent;
+    border:none;
+    font-size:13px;
+  }
+
+  .btn--danger:hover{
+    opacity:.8;
+  }
+
+  .btn--secondary{
+    background:var(--bg-app);
+    color:var(--txt-white-green);
+    border:1px solid rgba(229,255,245,.20);
+  }
+
+  .btn--secondary:hover{
+    background:rgba(229,255,245,.06);
+  }
+
+  .empty-state{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--txt-field);
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    padding:4px 12px;
+    border-radius:999px;
+    background:var(--bg-app);
+    border:1px solid rgba(229,255,245,.14);
+    color:var(--txt-light-green);
+    font-size:12px;
+    font-weight:600;
+  }
+</style>
+
+<div class="friends-overlay">
+  <div class="friends-wrapper">
+    <div class="friends-card">
+      <!-- Título -->
+      <h1 class="friends-title">Amigos</h1>
+      <p class="friends-subtitle">Gerencie suas amizades e solicitações pendentes</p>
+
+      <!-- Solicitações Pendentes -->
+      <% if (pending && pending.length) { %>
+        <div class="section">
+          <h3 class="section-title">⏳ Solicitações Pendentes</h3>
+          <% pending.forEach((p) => { %>
+            <div class="friend-item">
+              <div class="friend-info">
+                <% if (p.photoUrl) { %>
+                  <img src="<%= p.photoUrl %>" alt="<%= p.name %>" class="avatar">
+                <% } else { %>
+                  <div class="avatar-placeholder">
+                    <%= (p.name || 'J').charAt(0).toUpperCase() %>
+                  </div>
+                <% } %>
+                <div class="friend-details">
+                  <div class="friend-name"><%= p.name || 'Jogador' %></div>
+                  <div class="friend-email"><%= p.email || '' %></div>
+                </div>
+              </div>
+              <div class="action-buttons">
+                <form action="/friends/<%= p.uid %>/accept" method="POST" class="inline">
+                  <button type="submit" class="btn btn--accept">Aceitar</button>
+                </form>
+                <form action="/friends/<%= p.uid %>/reject" method="POST" class="inline">
+                  <button type="submit" class="btn btn--reject">Rejeitar</button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <!-- Lista de Amigos -->
+      <div class="section">
+        <h3 class="section-title">👥 Meus Amigos <span class="badge"><%= friends ? friends.length : 0 %></span></h3>
+        <% if (friends && friends.length) { %>
+          <% friends.forEach((f) => { %>
+            <div class="friend-item">
+              <div class="friend-info">
+                <% if (f.photoUrl) { %>
+                  <img src="<%= f.photoUrl %>" alt="<%= f.name %>" class="avatar">
+                <% } else { %>
+                  <div class="avatar-placeholder">
+                    <%= (f.name || 'J').charAt(0).toUpperCase() %>
+                  </div>
+                <% } %>
+                <div class="friend-details">
+                  <div class="friend-name"><%= f.name || 'Jogador' %></div>
+                  <div class="friend-email"><%= f.email || '' %></div>
+                </div>
+              </div>
+              <div class="action-buttons">
+                <a href="/profile/<%= f.uid %>" class="action-link">Ver Perfil</a>
+                <a href="/block/report/<%= f.uid %>" class="action-link" style="color: #ef4444;">🚨 Denunciar</a>
+                <form action="/friends/<%= f.uid %>/remove" method="POST" class="inline">
+                  <button type="submit" class="btn btn--danger">Remover</button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="empty-state">
+            <p>Você ainda não tem amigos. Comece adicionando alguém!</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão Voltar -->
+  <div style="text-align: center; margin-top: 16px;">
+    <a href="/home" class="btn btn--secondary">Voltar para Home</a>
+  </div>
+</div>
+
+<script>
+  // Pass current user ID to client-side script if needed
+  const currentUserId = '<%= player?.id %>';
+</script>

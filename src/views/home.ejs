@@ -1,0 +1,1234 @@
+<% layout('home-layout') -%>
+
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet"/>
+
+<style>
+  :root {
+    --bg-app: #0F1016;
+    --bg-card: #1E202D;
+    --txt-field: #778C8A;
+    --txt-light-green: #BDFFD3;
+    --txt-white-green: #E5FFF5;
+    --g-main: #39df79;
+    --g-ico: #04BF8A;
+    --r-lg: 14px;
+    --r-md: 10px;
+    --shadow-card: 0 18px 38px rgba(0,0,0,.45);
+    --tr-fast: .15s ease;
+  }
+
+  .home-header-mobile {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+  }
+
+  .home-logo-mobile {
+    width: 140px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    margin: 0 auto;
+    display: block;
+  }
+
+  .home-logo-desktop {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    margin: 0 auto 20px auto;
+    display: block;
+  }
+
+  @media (max-width: 1024px) {
+    .home-logo-desktop {
+      display: none !important;
+    }
+    .home-header-mobile {
+      display: block !important;
+    }
+  }
+
+  .home-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto;
+    align-items: start;
+    min-height: 100vh;
+  }
+
+  .profile-section {
+    background: var(--bg-card);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-card);
+    height: fit-content;
+  }
+
+  .profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 20px;
+  }
+
+  .profile-header h2 {
+    font-family: "Barlow", sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--txt-white-green);
+    margin: 0;
+  }
+
+  .profile-welcome {
+    color: var(--txt-light-green);
+    font-size: 0.9rem;
+    margin: 4px 0 16px 0;
+  }
+
+  .profile-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .profile-avatar img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--g-main);
+    object-fit: cover;
+  }
+
+  .profile-name {
+    text-align: center;
+    color: var(--txt-white-green);
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+
+  .profile-country {
+    text-align: center;
+    color: var(--txt-field);
+    font-size: 0.9rem;
+  }
+
+  .profile-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--tr-fast);
+    font-family: "Atkinson Hyperlegible", sans-serif;
+    font-size: 14px;
+  }
+
+  .btn--profile {
+    background: rgba(57, 223, 121, 0.15);
+    color: var(--g-main);
+    border: 1px solid var(--g-main);
+  }
+
+  .btn--profile:hover {
+    background: var(--g-main);
+    color: var(--bg-app);
+  }
+
+  .btn--friends {
+    background: rgba(229, 255, 245, 0.1);
+    color: var(--txt-white-green);
+    border: 1px solid rgba(229, 255, 245, 0.2);
+  }
+
+  .btn--friends:hover {
+    background: rgba(229, 255, 245, 0.2);
+  }
+
+  .btn--header {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+    background: #ef4444;
+    color: white;
+    border: none;
+  }
+
+  .btn--header:hover {
+    background: #dc2626;
+  }
+
+  .calls-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .search-filter {
+    display: flex;
+    gap: 8px;
+  }
+
+  .search-filter input {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--bg-app);
+    border: 1px solid rgba(229, 255, 245, 0.1);
+    border-radius: var(--r-md);
+    color: var(--txt-white-green);
+    font-size: 14px;
+  }
+
+  .search-filter input:focus {
+    outline: none;
+    border-color: var(--g-main);
+  }
+
+  .search-filter input::placeholder {
+    color: var(--txt-field);
+  }
+
+  .calls-list {
+    flex: 1;
+    padding-right: 8px;
+    min-height: 0;
+  }
+
+  .calls-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .calls-list::-webkit-scrollbar-track {
+    background: var(--bg-app);
+    border-radius: 10px;
+  }
+
+  .calls-list::-webkit-scrollbar-thumb {
+    background: var(--g-main);
+    border-radius: 10px;
+  }
+
+  .calls-list::-webkit-scrollbar-thumb:hover {
+    background: var(--g-ico);
+  }
+
+  .call-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(229, 255, 245, 0.1);
+    border-radius: var(--r-lg);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .call-card--active {
+    border: 2px solid #39df79;
+    background: rgba(57, 223, 121, 0.05);
+    box-shadow: 0 4px 16px rgba(57, 223, 121, 0.3);
+  }
+
+  .call-card h3 {
+    color: var(--txt-white-green);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .call-card p {
+    color: var(--txt-field);
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .call-description {
+    color: var(--txt-white-green);
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    font-style: italic;
+    padding: 8px 12px;
+    background: rgba(57, 223, 121, 0.05);
+    border-left: 3px solid #39df79;
+    border-radius: 6px;
+  }
+
+  .btn--primary {
+    margin-top: 16px;
+    background: var(--g-main);
+    color: var(--bg-app);
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 999px;
+    text-decoration: none;
+    display: inline-block;
+    transition: var(--tr-fast);
+  }
+
+  .btn--primary:hover {
+    background: #04BF8A;
+    transform: translateY(-2px);
+  }
+
+  .status-closed {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 8px;
+  }
+
+  .create-call-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: var(--g-main);
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(57, 223, 121, 0.4);
+    transition: var(--tr-fast);
+  }
+
+  .create-call-btn:hover {
+    transform: scale(1.1);
+    background: #04BF8A;
+  }
+
+  .presence-section {
+    background: var(--bg-card);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-card);
+    height: fit-content;
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    .presence-section {
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+    }
+
+    .presence-section::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .presence-section::-webkit-scrollbar-track {
+      background: var(--bg-app);
+      border-radius: 10px;
+    }
+
+    .presence-section::-webkit-scrollbar-thumb {
+      background: var(--g-main);
+      border-radius: 10px;
+    }
+
+    .presence-section::-webkit-scrollbar-thumb:hover {
+      background: var(--g-ico);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .presence-section {
+      display: none;
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--txt-field);
+    padding: 40px 20px;
+  }
+
+  @media (max-width: 1200px) {
+    .home-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .presence-mobile-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 90px;
+    width: 50px;
+    height: 50px;
+    background: rgba(57, 223, 121, 0.2);
+    border: 2px solid #39df79;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(57, 223, 121, 0.3);
+    transition: var(--tr-fast);
+    z-index: 40;
+  }
+
+  .presence-mobile-btn:hover {
+    transform: scale(1.1);
+    background: var(--g-main);
+  }
+
+  .presence-mobile-btn svg {
+    width: 24px;
+    height: 24px;
+    color: var(--g-main);
+  }
+
+  .presence-mobile-btn:hover svg {
+    color: var(--bg-app);
+  }
+
+  @media (max-width: 767px) {
+    .presence-mobile-btn {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .create-call-btn {
+      bottom: 30px;
+      right: 30px;
+    }
+
+    .presence-mobile-btn {
+      bottom: 30px;
+      right: 100px;
+    }
+  }
+</style>
+
+<div class="home-header-mobile">
+  <img id="appLogoMobile" class="home-logo-mobile" src="/images/couplogo.png" alt="Logo Co-Up" />
+  <div id="logoMobileFallback" style="display: none; align-items: center; justify-content: center; width: 140px; height: 48px; border-radius: 10px; background: linear-gradient(135deg, #39df79, #48DE8D); color: #0F1016; font-family: 'Barlow', sans-serif; font-weight: 700; letter-spacing: 0.5px; margin: 0 auto;">Co-Up</div>
+</div>
+
+<div class="home-container">
+  <!-- Left Column: Profile -->
+  <div class="profile-section">
+    <!-- Logo desktop (dentro da coluna) -->
+    <img id="appLogoDesktop" class="home-logo-desktop" src="/images/couplogo.png" alt="Logo Co-Up" />
+    <div id="logoDesktopFallback" style="display: none; align-items: center; justify-content: center; width: 100%; max-width: 180px; height: 48px; border-radius: 10px; background: linear-gradient(135deg, #39df79, #48DE8D); color: #0F1016; font-family: 'Barlow', sans-serif; font-weight: 700; letter-spacing: 0.5px; margin: 0 auto 20px auto;">Co-Up</div>
+    <div class="profile-header">
+      <div>
+        <h2>Meu Perfil</h2>
+        <p class="profile-welcome">Bem-vindo(a), <%= player?.name || "Jogador" %>!</p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="exitBtn" class="btn btn--header">Sair</button>
+      </div>
+    </div>
+
+    <div class="profile-avatar">
+      <img src="<%= player?.photoUrl || '/default-avatar.png' %>" alt="Avatar" />
+      </div>
+
+    <div class="profile-name"><%= player?.name || "Sem nome" %></div>
+        <% if (player?.country) { %>
+      <div class="profile-country">🌎 <%= player.country %></div>
+        <% } %>
+
+    <div class="profile-actions">
+      <a href="/profile/edit" class="btn btn--profile">Editar Perfil</a>
+      <a href="/friends" class="btn btn--friends">Amigos</a>
+    </div>
+  </div>
+
+  <!-- Center Column: Calls -->
+  <div class="calls-section">
+    <div class="search-filter">
+      <input type="text" id="searchInput" placeholder="Buscar chamados..." />
+    </div>
+
+    <div id="callsList" class="calls-list">
+      <% if (calls && calls.length) { %>
+          <% calls.forEach((call) => { %>
+          <div class="call-card <%= activeCallId === call.id ? 'call-card--active' : '' %>">
+            <h3>
+              <%= call.title %>
+              <% if (activeCallId === call.id) { %>
+                <span style="font-size: 0.7em; color: #39df79; margin-left: 8px;">● Ativo</span>
+              <% } %>
+            </h3>
+            <% if (call.description) { %>
+              <p class="call-description"><%= call.description.length > 120 ? call.description.substring(0, 120) + '...' : call.description %></p>
+            <% } %>
+            <p>Jogo: <%= call.gameId %></p>
+            <p>Plataforma: <%= call.platform %></p>
+            <p>Participantes: <%= call.participants.length %></p>
+
+              <% if (call.status === 'open') { %>
+              <% if (activeCallId === call.id) { %>
+                <a href="/calls/<%= call.id %>" class="btn btn--primary">Ver Chamado Ativo</a>
+              <% } else if (activeCallId) { %>
+                <button class="btn btn--primary" disabled style="opacity: 0.5; cursor: not-allowed;">Já em outro chamado</button>
+              <% } else { %>
+                  <a href="/calls/<%= call.id %>" class="btn btn--primary">Entrar no chamado</a>
+              <% } %>
+              <% } else { %>
+              <p class="status-closed">Chamado fechado</p>
+              <% } %>
+            </div>
+          <% }) %>
+      <% } else { %>
+        <div class="empty-state">
+          <p>Nenhum chamado aberto no momento.</p>
+        </div>
+      <% } %>
+    </div>
+    </div>
+
+  <!-- Right Column: Presence Widget -->
+  <div class="presence-section">
+    <div id="presenceWidget"></div>
+  </div>
+</div>
+
+<button id="presenceMobileBtn" class="presence-mobile-btn">
+  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+  </svg>
+</button>
+
+<button id="createCallBtn" class="create-call-btn">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+    </button>
+
+<!-- Modal for Creating Call -->
+<style>
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: #1E202D;
+  border: 1px solid rgba(229, 255, 245, 0.1);
+  border-radius: 14px;
+  padding: 32px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 18px 38px rgba(0,0,0,.45);
+}
+
+.modal-title {
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #E5FFF5;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #BDFFD3;
+  font-size: 14px;
+}
+
+.modal-field input[type="text"],
+.modal-field textarea,
+.modal-field select {
+  width: 100%;
+  padding: 12px 16px;
+  background: #0F1016;
+  border: 1px solid rgba(229, 255, 245, 0.1);
+  border-radius: 10px;
+  color: #E5FFF5;
+  font-size: 14px;
+}
+
+.modal-field textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: "Asap", system-ui, sans-serif;
+}
+
+.modal-field input[type="text"]:focus,
+.modal-field textarea:focus,
+.modal-field select:focus {
+  outline: none;
+  border-color: #39df79;
+}
+
+.modal-field input[type="text"]::placeholder,
+.modal-field textarea::placeholder {
+  color: #778C8A;
+}
+
+.modal-field select option {
+  background: #1E202D;
+  color: #E5FFF5;
+}
+
+.modal-radio-group, .modal-checkbox-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.modal-checkbox-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.modal-field label.radio-label, .modal-field label.checkbox-label {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  color: #E5FFF5;
+  cursor: pointer;
+}
+
+.modal-field input[type="radio"], .modal-field input[type="checkbox"] {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: "Atkinson Hyperlegible", sans-serif;
+  transition: 0.15s ease;
+}
+
+.modal-btn--submit {
+  background: #39df79;
+  color: #0F1016;
+}
+
+.modal-btn--submit:hover {
+  background: #04BF8A;
+  transform: translateY(-2px);
+}
+
+.modal-btn--cancel {
+  background: rgba(229, 255, 245, 0.1);
+  color: #E5FFF5;
+  border: 1px solid rgba(229, 255, 245, 0.2);
+}
+
+.modal-btn--cancel:hover {
+  background: rgba(229, 255, 245, 0.2);
+}
+</style>
+
+<div id="createCallModal" class="modal-overlay hidden" onclick="closeModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <h3 class="modal-title">Criar um Novo Chamado</h3>
+    <form id="createCallForm" class="modal-form">
+      <div class="modal-field">
+        <label for="modalTitle">Título</label>
+        <input type="text" name="title" id="modalTitle" required placeholder="Título do chamado" />
+      </div>
+
+      <div class="modal-field">
+        <label for="modalDescription">Descrição</label>
+        <textarea name="description" id="modalDescription" rows="4" placeholder="Descreva o chamado, regras, horário ou outras informações importantes..."></textarea>
+      </div>
+
+      <div class="modal-field">
+        <label for="modalGameId">Jogo</label>
+        <select name="gameId" id="modalGameId" required>
+          <option value="">Selecione um jogo</option>
+          <!-- Jogos favoritos do jogador (pré-selecionados) -->
+          <% if (player?.favoriteGameIds && player.favoriteGameIds.length) { %>
+            <% player.favoriteGameIds.forEach(game => { %>
+              <option value="<%= game %>" selected><%= game %></option>
+            <% }) %>
+          <% } %>
+          <!-- Todas as opções de jogos disponíveis -->
+          <option value="Apex Legends">Apex Legends</option>
+          <option value="Rainbow Six Siege">Rainbow Six Siege</option>
+          <option value="Destiny 2">Destiny 2</option>
+          <option value="Paladins">Paladins</option>
+          <option value="Warframe">Warframe</option>
+          <option value="Ark: Survival Evolved">Ark: Survival Evolved</option>
+          <option value="Rust">Rust</option>
+          <option value="Conan Exiles">Conan Exiles</option>
+          <option value="No Man's Sky">No Man's Sky</option>
+          <option value="The Forest / Sons of the Forest">The Forest / Sons of the Forest</option>
+          <option value="Genshin Impact">Genshin Impact</option>
+          <option value="Elden Ring (modo online)">Elden Ring (modo online)</option>
+          <option value="Monster Hunter: World">Monster Hunter: World</option>
+          <option value="Dauntless">Dauntless</option>
+          <option value="Fortnite">Fortnite</option>
+          <option value="The Sims 4">The Sims 4</option>
+          <option value="Gartic Phone">Gartic Phone</option>
+          <option value="Among Us">Among Us</option>
+          <option value="Fall Guys">Fall Guys</option>
+          <option value="Forza Horizon 5">Forza Horizon 5</option>
+          <option value="Need for Speed: Heat">Need for Speed: Heat</option>
+          <option value="Rocket League">Rocket League</option>
+          <option value="Overwatch 2">Overwatch 2</option>
+          <option value="Valorant">Valorant</option>
+          <option value="Minecraft">Minecraft</option>
+          <option value="CSGO">CSGO</option>
+          <option value="Red Dead Redemption 2">Red Dead Redemption 2</option>
+          <option value="Street Fighter">Street Fighter</option>
+          <option value="Mortal Kombat">Mortal Kombat</option>
+          <option value="FIFA">FIFA</option>
+          <option value="Payday">Payday</option>
+          <option value="Peak">Peak</option>
+          <option value="Blue Protocol">Blue Protocol</option>
+          <option value="Roblox">Roblox</option>
+          <option value="League Of Legends">League Of Legends</option>
+          <option value="Dota 2">Dota 2</option>
+        </select>
+      </div>
+
+      <div class="modal-field">
+        <label for="modalPlatform">Plataforma</label>
+        <select name="platform" id="modalPlatform" required>
+          <option value="">Selecione uma plataforma</option>
+          <!-- Plataformas do jogador (pré-selecionadas) -->
+          <% if (player?.platforms && player.platforms.length) { %>
+            <% player.platforms.forEach(platform => { %>
+              <option value="<%= platform %>" selected><%= platform.charAt(0).toUpperCase() + platform.slice(1) %></option>
+            <% }) %>
+          <% } %>
+          <!-- Todas as opções de plataformas disponíveis -->
+          <option value="pc">PC</option>
+          <option value="xbox">Xbox</option>
+          <option value="playstation">PlayStation</option>
+          <option value="switch">Switch</option>
+          <option value="mobile">Mobile</option>
+        </select>
+      </div>
+
+      <div class="modal-field">
+        <label>Call-friendly</label>
+        <div class="modal-radio-group">
+          <label class="radio-label">
+            <input type="radio" name="callFriendly" value="friendly" required checked />
+            Amigável
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="callFriendly" value="competitive" required />
+            Competitivo
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label>Estilo de Jogo</label>
+        <div class="modal-checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" name="playstyle" value="competitive" />
+            Competitivo 🏆
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="playstyle" value="casual" />
+            Casual 🎮
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="playstyle" value="fps" />
+            FPS 🔫
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="playstyle" value="moba" />
+            MOBA 🐉
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="playstyle" value="rpg" />
+            RPG ⚔️
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="playstyle" value="strategy" />
+            Strategy 🧠
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="playstyle" value="battle-royale" />
+            Battle Royale 💣
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="modal-btn modal-btn--submit">Criar Chamado</button>
+        <button type="button" id="cancelBtn" class="modal-btn modal-btn--cancel">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal for Presence (Mobile) -->
+<div id="presenceModal" class="modal-overlay hidden">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 class="modal-title" style="margin: 0;">Jogadores Online Similares</h3>
+      <button id="closePresenceModalBtn" style="background: none; border: none; color: #BDFFD3; font-size: 28px; cursor: pointer; padding: 0; line-height: 1;">×</button>
+    </div>
+    <div id="presenceModalContent"></div>
+  </div>
+</div>
+
+<style>
+#presenceModalContent {
+  background: #1E202D;
+  border-radius: 14px;
+  padding: 16px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+#presenceModalContent * {
+  color: #E5FFF5 !important;
+  background: transparent !important;
+}
+
+#presenceModalContent .presence-widget {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#presenceModalContent ul,
+#presenceModalContent li {
+  background: transparent !important;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#presenceModalContent li {
+  padding: 12px;
+  border-bottom: 1px solid rgba(229, 255, 245, 0.1) !important;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#presenceModalContent li:last-child {
+  border-bottom: none !important;
+}
+
+#presenceModalContent img {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  border: 2px solid #39df79 !important;
+  object-fit: cover !important;
+}
+
+#presenceModalContent .font-medium,
+#presenceModalContent p {
+  color: #E5FFF5 !important;
+  font-weight: 600;
+}
+
+#presenceModalContent .text-slate-500,
+#presenceModalContent .text-xs {
+  color: #778C8A !important;
+}
+
+#presenceModalContent .text-slate-400 {
+  color: #778C8A !important;
+}
+
+#presenceModalContent .rounded-full {
+  width: 8px !important;
+  height: 8px !important;
+  background: #39df79 !important;
+}
+
+#presenceModalContent .text-sm,
+#presenceModalContent .text-center {
+  color: #778C8A !important;
+}
+
+#presenceModalContent div[class*="divide"] {
+  border-color: rgba(229, 255, 245, 0.1) !important;
+}
+
+#presenceModalContent div[class*="bg-"],
+#presenceModalContent div[class*="shadow"] {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+</style>
+
+
+<script>
+  console.log('[home] script carregado');
+
+  // dispara tudo após a página terminar de carregar
+  window.addEventListener('load', () => {
+    console.log('[home] window load');
+
+    // 1) Anuncia ONLINE (envia cookie com credentials)
+    (async function announceOnline() {
+      try {
+        console.log('[presence] POST /presence/online');
+        const r = await fetch('/presence/online', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          credentials: 'same-origin',      // << garante envio do cookie `session`
+          body: JSON.stringify({})
+        });
+        console.log('[presence] /presence/online status:', r.status);
+      } catch (e) {
+        console.error('[presence] erro ao anunciar online', e);
+      }
+    })();
+
+    // 2) Heartbeat a cada 60s (também com cookie)
+    const heartbeatInterval = setInterval(() => {
+      fetch('/presence/ping', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        credentials: 'same-origin'        // << garante cookie no ping
+      })
+      .then(r => console.log('[presence] /presence/ping', r.status))
+      .catch(err => console.warn('[presence] ping falhou', err));
+    }, 60_000);
+
+    // 3) Set offline on page unload or exit button
+    async function setOffline() {
+      try {
+        console.log('[presence] POST /presence/offline');
+        await fetch('/presence/offline', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          credentials: 'same-origin'
+        });
+        console.log('[presence] offline set');
+      } catch (e) {
+        console.error('[presence] erro ao set offline', e);
+      }
+    }
+
+    window.addEventListener('beforeunload', setOffline);
+    document.getElementById('exitBtn').addEventListener('click', async () => {
+      await setOffline();
+      clearInterval(heartbeatInterval);
+      window.location.href = '/auth';
+    });
+
+    // 3) Carrega widget de semelhantes (HTML) com cookie
+    async function loadSimilarOnline() {
+      try {
+        console.log('[presence] GET /players/online/similar (HTML)');
+        const res = await fetch('/players/online/similar?limit=12', {
+          headers: { 'Accept': 'text/html' },
+          credentials: 'same-origin'      // << garante cookie no GET
+        });
+        const html = await res.text();
+        
+        // Desktop: carrega no widget
+        const mount = document.getElementById('presenceWidget');
+        if (mount) mount.innerHTML = html;
+        
+        // Mobile: carrega no modal
+        const mobileMount = document.getElementById('presenceModalContent');
+        if (mobileMount) mobileMount.innerHTML = html;
+        
+        console.log('[presence] similar carregado:', res.status);
+      } catch (e) {
+        console.warn('[presence] similar falhou', e);
+      }
+    }
+    loadSimilarOnline();
+    setInterval(loadSimilarOnline, 60_000);
+
+    // 4) Carrega e atualiza chamados automaticamente
+    let currentFilters = {}; // Store current filter settings
+
+    async function loadCalls() {
+      try {
+        // Build query string from current search
+        const params = new URLSearchParams();
+        if (currentFilters.search) params.append('search', currentFilters.search);
+
+        const queryString = params.toString();
+        const url = `/calls${queryString ? '?' + queryString : ''}`;
+
+        console.log('[calls] GET', url, '(JSON)');
+        const res = await fetch(url, {
+          headers: { 'Accept': 'application/json' },
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        const calls = data.calls || data; // Handle both old and new response formats
+        const filterOptions = data.filterOptions;
+
+        console.log('[calls] carregados:', calls.length);
+
+        displayCalls(calls); // Display the filtered calls from server
+      } catch (e) {
+        console.warn('[calls] falhou ao carregar chamados', e);
+      }
+    }
+
+
+    // Function to display calls (no client-side filtering)
+    function displayCalls(calls) {
+      const callsList = document.getElementById('callsList');
+      if (!callsList) return;
+
+      const activeCallId = '<%= activeCallId %>';
+
+      let html = '';
+      if (calls && calls.length) {
+        calls.forEach(call => {
+          const isActive = activeCallId && call.id === activeCallId;
+          const activeClass = isActive ? 'call-card--active' : '';
+          const activeBadge = isActive ? '<span style="font-size: 0.7em; color: #39df79; margin-left: 8px;">● Ativo</span>' : '';
+          
+          let buttonHtml = '';
+          if (call.status === 'open') {
+            if (isActive) {
+              buttonHtml = '<a href="/calls/' + call.id + '" class="btn btn--primary">Ver Chamado Ativo</a>';
+            } else if (activeCallId) {
+              buttonHtml = '<button class="btn btn--primary" disabled style="opacity: 0.5; cursor: not-allowed;">Já em outro chamado</button>';
+            } else {
+              buttonHtml = '<a href="/calls/' + call.id + '" class="btn btn--primary">Entrar no chamado</a>';
+            }
+          } else {
+            buttonHtml = '<p class="status-closed">Chamado fechado</p>';
+          }
+          
+          const description = call.description || '';
+          const descriptionPreview = description.length > 120 ? description.substring(0, 120) + '...' : description;
+          const descriptionHtml = description ? `<p class="call-description">${descriptionPreview}</p>` : '';
+          
+          html += `
+            <div class="call-card ${activeClass}">
+              <h3>${call.title}${activeBadge}</h3>
+              ${descriptionHtml}
+              <p>Jogo: ${call.gameId}</p>
+              <p>Plataforma: ${call.platform}</p>
+              <p>Participantes: ${call.participants.length}</p>
+              ${buttonHtml}
+            </div>
+          `;
+        });
+      } else {
+        html = '<div class="empty-state"><p>Nenhum chamado encontrado.</p></div>';
+      }
+
+      callsList.innerHTML = html;
+    }
+
+    loadCalls();
+    setInterval(loadCalls, 10_000); // Atualiza a cada 10 segundos
+
+    // Add real-time search functionality
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const searchTerm = e.target.value.trim();
+      currentFilters.search = searchTerm;
+      loadCalls();
+    });
+
+    // Modal functionality
+    const createCallBtn = document.getElementById('createCallBtn');
+    const createCallModal = document.getElementById('createCallModal');
+    const createCallForm = document.getElementById('createCallForm');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    createCallBtn.addEventListener('click', () => {
+      // Pre-select styles from player's styles
+      const playerStyles = '<%= player?.styles?.join(",") || "" %>';
+      
+      if (playerStyles) {
+        const playerStylesArray = playerStyles.split(',');
+        document.querySelectorAll('input[name="playstyle"]').forEach(checkbox => {
+          playerStylesArray.forEach(playerStyle => {
+            const normalizedStyle = playerStyle.trim().toLowerCase().replace(/[^a-z0-9\s]/g, '');
+            const checkboxValue = checkbox.value.toLowerCase();
+            const checkboxLabel = checkbox.nextElementSibling?.textContent?.toLowerCase().replace(/[^a-z0-9\s]/g, '') || '';
+            
+            // Check if the style matches (handling emojis and special characters)
+            if (normalizedStyle.includes(checkboxValue) || 
+                checkboxValue.includes(normalizedStyle) ||
+                checkboxLabel.includes(normalizedStyle) ||
+                normalizedStyle.includes(checkboxLabel)) {
+              checkbox.checked = true;
+            }
+          });
+        });
+      }
+
+      createCallModal.classList.remove('hidden');
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      createCallModal.classList.add('hidden');
+      createCallForm.reset();
+    });
+
+    // Close modal when clicking outside
+    createCallModal.addEventListener('click', (e) => {
+      if (e.target === createCallModal) {
+        createCallModal.classList.add('hidden');
+        createCallForm.reset();
+      }
+    });
+
+    createCallForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(createCallForm);
+      const data = Object.fromEntries(formData);
+
+      // Process playstyle checkboxes
+      const playstyles = [];
+      for (const [key, value] of formData.entries()) {
+        if (key === 'playstyle') {
+          playstyles.push(value);
+        }
+      }
+
+      const callData = {
+        ...data,
+        playstyles: playstyles
+      };
+
+      console.log('Enviando dados do formulário:', callData);
+
+      try {
+        console.log('Fazendo requisição POST para /calls');
+        const res = await fetch('/calls', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify(callData)
+        });
+        console.log('Status da resposta:', res.status);
+
+        if (res.ok) {
+          const callData = await res.json();
+          console.log('Chamado criado com sucesso:', callData);
+          createCallModal.classList.add('hidden');
+          createCallForm.reset();
+          window.showToast('Chamado criado com sucesso!');
+          // Add a small delay to ensure the call is fully persisted before redirecting
+          setTimeout(() => {
+            window.location.href = `http://localhost:3000/calls/${callData.id}`;
+          }, 1000);
+        } else {
+          const error = await res.json();
+          console.error('Erro na resposta do servidor:', error);
+          window.showToast(error.message || 'Erro ao criar chamado');
+        }
+      } catch (error) {
+        console.error('Erro ao criar chamado:', error);
+        window.showToast('Erro ao criar chamado');
+      }
+    });
+  });
+
+  // Presence mobile button functionality
+  const presenceMobileBtn = document.getElementById('presenceMobileBtn');
+  const presenceModal = document.getElementById('presenceModal');
+  const closePresenceModalBtn = document.getElementById('closePresenceModalBtn');
+  
+  function closePresenceModal() {
+    if (presenceModal) {
+      presenceModal.classList.add('hidden');
+    }
+  }
+
+  if (presenceMobileBtn && presenceModal) {
+    presenceMobileBtn.addEventListener('click', () => {
+      presenceModal.classList.remove('hidden');
+    });
+  }
+
+  if (closePresenceModalBtn) {
+    closePresenceModalBtn.addEventListener('click', closePresenceModal);
+  }
+
+  if (presenceModal) {
+    presenceModal.addEventListener('click', (e) => {
+      if (e.target === presenceModal) {
+        closePresenceModal();
+      }
+    });
+  }
+
+  // Logo fallback handling
+  (function ensureLogoLoads() {
+    const desktopImg = document.getElementById('appLogoDesktop');
+    const desktopFallback = document.getElementById('logoDesktopFallback');
+    const mobileImg = document.getElementById('appLogoMobile');
+    const mobileFallback = document.getElementById('logoMobileFallback');
+    
+    if (!desktopImg || !mobileImg) return;
+    
+    const candidates = ['/images/couplogo.png', '/src/views/images/couplogo.png', 'images/couplogo.png'];
+    let i = 0;
+    
+    function tryNext() {
+      if (i >= candidates.length) {
+        if (desktopFallback) desktopFallback.style.display = 'flex';
+        if (desktopImg) desktopImg.style.display = 'none';
+        if (mobileFallback) mobileFallback.style.display = 'flex';
+        if (mobileImg) mobileImg.style.display = 'none';
+        return;
+      }
+      desktopImg.src = candidates[i];
+      mobileImg.src = candidates[i++];
+    }
+    
+    desktopImg.addEventListener('error', tryNext);
+    mobileImg.addEventListener('error', tryNext);
+  })();
+</script>

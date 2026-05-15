@@ -1,0 +1,379 @@
+<% layout('layout') -%>
+
+<!--
+  Login Page – Card Único Centralizado com LOGO (com fallback de paths)
+  ✔ Fundo sólido 100%
+  ✔ Apenas um card centralizado
+  ✔ Logo centralizada acima do card
+  ✔ Sem "Esqueceu a senha?"
+  ✔ Botão Google preservado porém oculto
+  ✔ Fallback inteligente para caminhos da imagem (tenta múltiplos paths comuns)
+-->
+
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet"/>
+
+<style>
+  :root{
+    --bg-app:#0F1016;
+    --bg-card:#1E202D;
+    --txt-field:#778C8A;
+    --txt-light-green:#BDFFD3;
+    --txt-white-green:#E5FFF5;
+    --g-main:#39df79;
+    --g-ico:#04BF8A;
+    --r-lg:14px;
+    --r-md:10px;
+    --shadow-card:0 18px 38px rgba(0,0,0,.45);
+    --shadow-focus:0 0 0 3px rgba(72,222,141,.3);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;padding:0}
+
+  /* Fundo 100% preenchido */
+  body{
+    min-height:100dvh;
+    background:var(--bg-app);
+    display:grid;
+    place-items:center;
+    color:var(--txt-white-green);
+    font-family:"Asap",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* Overlay garante 1 única camada visível */
+  .login-overlay{
+    position:fixed;
+    inset:0;
+    background:var(--bg-app);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    isolation:isolate;
+  }
+
+  /* LOGO central acima do card */
+  .login-logo{
+    display:block;
+    width:140px;
+    max-width:32vw;
+    height:auto;
+    margin:0 auto 22px auto;
+    object-fit:contain;
+    image-rendering:auto;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,.25));
+  }
+
+  /* Placeholder discreto (aparece se a imagem falhar) */
+  .logo-fallback{
+    width:160px; height:44px; border-radius:10px;
+    background:linear-gradient(135deg, var(--g-main), var(--g-ico));
+    color:var(--bg-card);
+    display:none; /* só exibimos via JS se a logo não carregar */
+    align-items:center; justify-content:center;
+    font-family:"Barlow",sans-serif; font-weight:700; letter-spacing:.5px;
+    margin:0 auto 22px auto;
+  }
+
+  .login-wrapper{
+    width:min(480px, 92vw);
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .login-card{
+    background:var(--bg-card);
+    border-radius:var(--r-lg);
+    padding:clamp(22px,4vw,34px);
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* Brand (mantido para não quebrar dependências) */
+  .brand{
+    display:flex; align-items:center; gap:10px; margin-bottom:6px;
+  }
+  .brand__logo{
+    width:40px;height:40px;border-radius:8px;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--g-main),var(--g-ico));
+    color:var(--bg-card);font-weight:700;font-family:"Barlow",sans-serif;
+  }
+  .brand__name{
+    font-family:"Barlow",sans-serif;font-weight:700;letter-spacing:.5px;color:var(--txt-light-green);
+  }
+
+  .title{text-align:center;margin:6px 0 22px 0;line-height:1.25;}
+  .title .t1{
+    display:block;font-family:"Barlow",sans-serif;font-weight:700;
+    font-size:clamp(1.5rem,2.6vw,2rem);color:var(--txt-white-green);
+  }
+  .title .t2{
+    display:block;font-weight:500;font-size:clamp(.95rem,1.9vw,1.05rem);
+    color:var(--txt-light-green);opacity:.9;margin-top:4px;
+  }
+
+  form{display:grid;gap:14px;}
+
+  .field{position:relative;}
+  .field__icon{
+    width:22px;height:22px;position:absolute;left:14px;top:50%;
+    transform:translateY(-50%);opacity:.9;color:var(--g-ico);pointer-events:none;
+  }
+  .input{
+    width:100%;padding:12px 14px 12px 44px;border-radius:var(--r-md);
+    outline:none;border:1px solid rgba(255,255,255,.06);
+    background:#1b1d28;color:var(--txt-white-green);font-size:.98rem;
+    transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .input::placeholder{color:var(--txt-field);}
+  .input:focus{border-color:transparent;box-shadow:var(--shadow-focus);background:#1a1c26;}
+
+  .btn{
+    appearance:none;border:none;cursor:pointer;width:100%;
+    border-radius:999px;padding:12px 20px;
+    font-family:"Atkinson Hyperlegible",sans-serif;font-weight:700;letter-spacing:.4px;
+    transition:transform .06s ease,box-shadow .2s ease,filter .2s ease;
+  }
+  .btn--primary{
+    background:linear-gradient(135deg,var(--g-main),#48DE8D);
+    color:var(--bg-card);
+    box-shadow:0 10px 22px rgba(72,222,141,.28), inset 0 -2px 0 rgba(0,0,0,.25);
+    border:1px solid rgba(72,222,141,.45);
+  }
+  .btn--primary:hover{filter:brightness(1.06);}
+  .btn--primary:active{transform:translateY(1px);}
+
+  .btn--google{display:none !important;}
+
+  .mini{margin-top:14px;text-align:center;color:var(--txt-field);font-size:.9rem;}
+
+  .register-link {
+    text-align: center;
+    margin-top: 16px;
+    color: var(--txt-field);
+    font-size: .9rem;
+  }
+  .register-link a {
+    color: var(--g-main);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .register-link a:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width:760px){
+    .login-wrapper{width:min(500px,92vw);}
+    .login-logo{width:160px;}
+    .logo-fallback{width:180px;height:48px;}
+  }
+
+  /* Alertas de erro */
+  .alert {
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  .alert--error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+  }
+
+  .alert--warning {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: #fcd34d;
+  }
+
+  .alert-content {
+    font-size: 0.93rem;
+    line-height: 1.5;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<!-- Fundo e card único -->
+<div class="login-overlay">
+  <!--
+    LOGO centralizada com fallback de caminho:
+    1) Tenta o caminho fornecido por você: /src/views/images/couplogo.png
+    2) Se falhar, tenta /images/couplogo.png (pasta 'public/images' do Express)
+    3) Se ainda falhar, tenta images/couplogo.png (relativo)
+    4) Exibe um bloco placeholder "Co-Up"
+  -->
+  <img
+    id="appLogo"
+    src="/src/views/images/couplogo.png"
+    alt="Logo Co-Up"
+    class="login-logo"
+    loading="eager"
+    decoding="async"
+  />
+  <div id="logoFallback" class="logo-fallback">Co-Up</div>
+
+  <div class="login-wrapper">
+    <div class="login-card" role="dialog" aria-labelledby="titulo-login" aria-describedby="descricao-login">
+
+      <!-- Títulos -->
+      <div class="title">
+        <span id="titulo-login" class="t1">Bem Vindo de volta!</span>
+        <span id="descricao-login" class="t2">Acesse sua conta para continuar</span>
+      </div>
+
+      <!-- Formulário -->
+      <form id="loginForm" action="/login" method="POST" novalidate>
+        
+        <!-- Alerta de erro -->
+        <% if (error) { %>
+          <div id="errorAlert" class="alert alert--error">
+            <div class="alert-content"></div>
+          </div>
+        <% } %>
+
+        <!-- E-mail -->
+        <div class="field">
+          <svg class="field__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z"/>
+          </svg>
+          <input class="input" id="email" name="email" type="email" placeholder="E-mail" autocomplete="username" required />
+        </div>
+
+        <!-- Senha -->
+        <div class="field">
+          <svg class="field__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5Zm-3 8V6a3 3 0 0 1 6 0v3H9Z"/>
+          </svg>
+          <input class="input" id="password" name="password" type="password" placeholder="Senha" autocomplete="current-password" required />
+        </div>
+
+        <!-- "Esqueceu a senha?" (comentado) -->
+        <!--
+        <div class="help-row">
+          <a class="help-link" href="/forgot-password">Esqueceu a senha?</a>
+        </div>
+        -->
+
+        <button type="submit" class="btn btn--primary" id="enterButton">ENTRAR</button>
+
+        <!-- Botão Google (oculto) -->
+        <button type="button" class="btn btn--google" id="googleLoginBtn" aria-hidden="true">
+          Entrar com Google
+        </button>
+      </form>
+
+      <div class="register-link">
+        Não tem uma conta? <a href="/signup">Cadastre-se</a>
+      </div>
+
+      <div class="mini">Protegido • Co-Up</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Fallback de caminhos para a logo.
+  (function ensureLogoLoads(){
+    const img = document.getElementById('appLogo');
+    const fallback = document.getElementById('logoFallback');
+    if(!img) return;
+
+    const candidates = [
+      "/src/views/images/couplogo.png", // caminho informado
+      "/images/couplogo.png",           // público/estático comum (Express .static)
+      "images/couplogo.png"             // relativo à rota atual
+    ];
+
+    let tryIndex = 0;
+    const tryNext = () => {
+      if (tryIndex >= candidates.length) {
+        // mostra placeholder
+        if (fallback){ fallback.style.display = "flex"; }
+        if (img){ img.style.display = "none"; }
+        return;
+      }
+      const url = candidates[tryIndex++];
+      // troca a src e força o load
+      img.src = url;
+    };
+
+    // se falhar o carregamento, tenta próximo caminho
+    img.addEventListener('error', tryNext, { once:false });
+
+    // dispara teste inicial se a primeira URL não carregar rápido
+    // (se a primeira já for válida, esse listener não atrapalha)
+    // nada a fazer aqui; a primeira já está definida na marcação
+  })();
+
+  // Mapeamento de erros para mensagens amigáveis
+  const errorMessages = {
+    // Erros de Login
+    'auth/user-not-found': 'E-mail não cadastrado. Verifique o e-mail ou crie uma conta.',
+    'auth/wrong-password': 'Senha incorreta. Tente novamente ou recupere sua senha.',
+    'auth/invalid-login-credentials': 'E-mail ou senha incorretos. Verifique suas credenciais.',
+    'auth/user-disabled': 'Sua conta foi desabilitada. Entre em contato com o suporte.',
+    'auth/invalid-email': 'Formato de e-mail inválido.',
+    'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.',
+    'auth/internal-error': 'Erro interno do servidor. Tente novamente em alguns instantes.',
+    'missing_credentials': 'Por favor, preencha e-mail e senha.',
+    'invalid_credentials': 'Credenciais inválidas. Verifique e-mail e senha.',
+    
+    // Fallback
+    'login': 'Erro ao fazer login. Tente novamente.',
+    'login_error': 'Erro ao fazer login. Tente novamente.',
+  };
+
+  // Exibir erro se houver
+  (function displayError() {
+    <% if (error && code) { %>
+      const errorAlert = document.getElementById('errorAlert');
+      if (errorAlert) {
+        const errorCode = '<%= code %>';
+        const errorMessage = errorMessages[errorCode] || errorMessages['login'] || 'Erro desconhecido';
+        errorAlert.querySelector('.alert-content').textContent = errorMessage;
+        errorAlert.style.display = 'flex';
+      }
+    <% } %>
+  })();
+
+  (function () {
+    const form = document.getElementById('loginForm');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+      // validação custom se necessário
+    });
+  })();
+
+  /* Login via Google (preservado/oculto)
+  (function () {
+    const googleBtn = document.getElementById('googleLoginBtn');
+    if (!googleBtn) return;
+    googleBtn.addEventListener('click', async () => {
+      try{
+        const r = await fetch('/auth/google',{method:'GET'});
+        if(r.ok) window.location.href='/home';
+        else alert('Erro ao autenticar com Google');
+      }catch(err){ console.error(err); alert('Erro no login com Google'); }
+    });
+  })();
+  */
+</script>

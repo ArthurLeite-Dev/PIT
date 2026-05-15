@@ -1,0 +1,991 @@
+<% layout('layout') -%>
+
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet"/>
+
+<style>
+  :root{
+    --bg-app:#0F1016;
+    --bg-card:#1E202D;
+    --txt-field:#778C8A;
+    --txt-light-green:#BDFFD3;
+    --txt-white-green:#E5FFF5;
+    --g-main:#39df79;
+    --g-ico:#04BF8A;
+    --r-lg:14px;
+    --r-md:10px;
+    --shadow-card:0 18px 38px rgba(0,0,0,.45);
+    --shadow-focus:0 0 0 3px rgba(72,222,141,.3);
+    --tr-fast:.15s ease;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;padding:0}
+
+  body{
+    min-height:100dvh;
+    background:var(--bg-app);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    color:var(--txt-white-green);
+    font-family:"Asap",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .profile-overlay{
+    position:fixed;
+    inset:0;
+    background:var(--bg-app);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    z-index:9999;
+    isolation:isolate;
+    overflow-y:auto;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .profile-logo{
+    display:block;
+    width:140px;
+    max-width:32vw;
+    height:auto;
+    margin:0 auto 22px auto;
+    object-fit:contain;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,.25));
+  }
+
+  .logo-fallback{
+    width:180px; height:48px; border-radius:10px;
+    background:linear-gradient(135deg, var(--g-main), var(--g-ico));
+    color:var(--bg-card);
+    display:none;
+    align-items:center; justify-content:center;
+    font-family:"Barlow",sans-serif; font-weight:700; letter-spacing:.5px;
+    margin:0 auto 22px auto;
+  }
+
+  .profile-wrapper{
+    width:min(800px, 92vw);
+  }
+
+  .profile-card{
+    background:var(--bg-card);
+    border-radius:var(--r-lg);
+    padding:clamp(22px,4vw,34px);
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+    position:relative;
+  }
+
+  .profile-title{
+    text-align:center;
+    margin:6px 0 22px 0;
+    line-height:1.25;
+    font-family:"Barlow",sans-serif;
+    font-weight:700;
+    font-size:clamp(1.5rem,2.6vw,2rem);
+    color:var(--txt-white-green);
+  }
+
+  .profile-subtitle{
+    text-align:center;
+    color:var(--txt-light-green);
+    opacity:.9;
+    margin:-10px 0 18px 0;
+    font-size:clamp(.92rem,1.9vw,1.02rem);
+  }
+
+  .form-grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:16px;
+  }
+
+  @media (min-width: 768px){
+    .form-grid{
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .section{
+    background:var(--bg-card);
+    border:1px solid rgba(229,255,245,.10);
+    border-radius:var(--r-lg);
+    padding:16px;
+  }
+
+  .section__header{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;
+  }
+
+  .section__title{
+    font-family:"Barlow",sans-serif;
+    color:var(--txt-light-green);
+    font-weight:700;
+    letter-spacing:.2px;
+    margin:0;
+    font-size:16px;
+  }
+
+  .section__content{
+    color:var(--txt-white-green);
+    font-size:14px;
+  }
+
+  .btn-inline{
+    padding:8px 12px;
+    border-radius:var(--r-md);
+    border:1px solid rgba(229,255,245,.18);
+    background:transparent;
+    color:var(--txt-light-green);
+    font-weight:600;
+    cursor:pointer;
+    transition:background var(--tr-fast), transform var(--tr-fast);
+  }
+
+  .btn-inline:hover{
+    background:rgba(72,222,141,.10);
+  }
+
+  .btn-inline:active{
+    transform:translateY(1px);
+  }
+
+  .input{
+    width:100%;
+    background:#1b1d28;
+    color:var(--txt-white-green);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--r-md);
+    padding:12px 14px;
+    font-family:"Asap",sans-serif;
+    outline:none;
+    transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+
+  .input::placeholder{
+    color:var(--txt-field);
+  }
+
+  .input:focus{
+    border-color:transparent;
+    box-shadow:var(--shadow-focus);
+    background:#1a1c26;
+  }
+
+  .chips{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px 12px;
+    border-radius:999px;
+    border:1px solid rgba(229,255,245,.14);
+    color:var(--txt-light-green);
+    font-size:13px;
+    cursor:pointer;
+    user-select:none;
+    transition:background var(--tr-fast), border-color var(--tr-fast), transform var(--tr-fast);
+  }
+
+  .chip:hover{
+    transform:translateY(-1px);
+  }
+
+  .chip.selected{
+    background:linear-gradient(90deg, rgba(72,222,141,.10), rgba(72,222,141,.06));
+    border-color:var(--g-main);
+    color:var(--g-ico);
+    font-weight:600;
+  }
+
+  .avatar{
+    height:72px;
+    width:72px;
+    border-radius:12px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid transparent;
+    background:#1b1d28;
+    cursor:pointer;
+    transition:box-shadow var(--tr-fast), border-color var(--tr-fast), transform var(--tr-fast);
+  }
+
+  .avatar:hover{
+    transform:translateY(-1px);
+  }
+
+  .avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .avatar.selected{
+    border-color:var(--g-main);
+    box-shadow:0 8px 24px rgba(72,222,141,.12) inset;
+  }
+
+  .actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:16px;
+  }
+
+  .btn{
+    --btn-bg: linear-gradient(135deg, var(--g-main), var(--g-ico));
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:12px 20px;
+    border-radius:999px;
+    border:1px solid rgba(72,222,141,.45);
+    background:var(--btn-bg);
+    color:var(--bg-card);
+    font-family:"Atkinson Hyperlegible",sans-serif;
+    font-weight:700;
+    letter-spacing:.4px;
+    cursor:pointer;
+    box-shadow:0 10px 22px rgba(72,222,141,.28), inset 0 -2px 0 rgba(0,0,0,.25);
+    transition:transform var(--tr-fast), box-shadow var(--tr-fast), filter var(--tr-fast);
+    min-height:40px;
+  }
+
+  .btn:hover{
+    filter:brightness(1.06);
+  }
+
+  .btn:active{
+    transform:translateY(1px);
+  }
+
+  .btn--ghost{
+    background:transparent;
+    color:var(--txt-white-green);
+    border:1px solid rgba(229,255,245,.20);
+    box-shadow:none;
+  }
+
+  .btn--ghost:hover{
+    background:rgba(229,255,245,.06);
+  }
+
+  .modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.75);
+    backdrop-filter:blur(4px);
+    z-index:10000;
+    padding:18px;
+  }
+
+  .modal.active{
+    display:flex !important;
+  }
+
+  .modal__content{
+    background:var(--bg-card);
+    border:1px solid rgba(229,255,245,.10);
+    border-radius:var(--r-lg);
+    box-shadow:var(--shadow-card);
+    padding:20px;
+    width:100%;
+    max-width:520px;
+    max-height:80vh;
+    overflow:auto;
+  }
+
+  .modal__header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:12px;
+  }
+
+  .modal__title{
+    font-family:"Barlow",sans-serif;
+    color:var(--txt-light-green);
+    font-weight:700;
+    margin:0;
+    font-size:18px;
+  }
+
+  .modal__close{
+    background:none;
+    border:none;
+    color:var(--txt-field);
+    font-size:22px;
+    cursor:pointer;
+    padding:0;
+    width:30px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .modal__close:hover{
+    color:var(--txt-light-green);
+  }
+
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    justify-content:flex-end;
+  }
+
+  .form-group{
+    margin-bottom:20px;
+  }
+
+  .form-label{
+    display:block;
+    margin-bottom:8px;
+    color:var(--txt-light-green);
+    font-weight:600;
+    font-size:14px;
+  }
+
+  .form-input{
+    width:100%;
+    padding:12px;
+    background:#1b1d28;
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:var(--r-md);
+    color:var(--txt-white-green);
+    font-size:16px;
+    outline:none;
+    transition:all 0.2s;
+  }
+
+  .form-input:focus{
+    border-color:#39df79;
+    box-shadow:0 0 0 3px rgba(72,222,141,.2);
+  }
+
+  .chip-container{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  .avatar-grid{
+    display:grid;
+    gap:12px;
+    grid-template-columns: repeat(4,1fr);
+  }
+
+  .avatar-grid .avatar{
+    width:100%;
+    height:80px;
+    border-radius:10px;
+  }
+
+  @media (min-width:760px){
+    .profile-wrapper{
+      width:min(650px,92vw);
+    }
+    .profile-logo{
+      width:160px;
+    }
+    .logo-fallback{
+      width:180px;
+      height:48px;
+    }
+  }
+</style>
+
+<div class="profile-overlay">
+  <img
+    id="appLogo"
+    src="/images/couplogo.png"
+    alt="Logo Co-Up"
+    class="profile-logo"
+    loading="eager"
+    decoding="async"
+  />
+  <div id="logoFallback" class="logo-fallback">Co-Up</div>
+
+  <div class="profile-wrapper">
+    <div class="profile-card" role="dialog" aria-labelledby="profile-title">
+      <h1 id="profile-title" class="profile-title">Editar perfil</h1>
+      <p class="profile-subtitle">Atualize suas informações pessoais</p>
+
+      <div class="form-grid">
+        <!-- Nome & País -->
+        <section class="section" aria-labelledby="sec-nome-title">
+          <div class="section__header">
+            <h2 id="sec-nome-title" class="section__title">Nome & País</h2>
+            <button type="button" class="btn-inline edit-btn" data-section="name-country">Editar</button>
+          </div>
+          <div class="section__content">
+            <div id="display-name"><%= player.name || 'Não informado' %></div>
+            <div id="display-country" style="margin-top: 8px; color: #778C8A;"><%= player.country || 'Não informado' %></div>
+          </div>
+        </section>
+
+        <!-- Idiomas -->
+        <section class="section" aria-labelledby="sec-idiomas-title">
+          <div class="section__header">
+            <h2 id="sec-idiomas-title" class="section__title">Idiomas</h2>
+            <button type="button" class="btn-inline edit-btn" data-section="languages">Editar</button>
+          </div>
+          <div class="section__content" id="display-languages">
+            <%
+              const languageMap = {
+                'pt-BR': 'Português (Brasil)',
+                'en': 'Inglês',
+                'es': 'Espanhol',
+                'fr': 'Francês',
+                'de': 'Alemão',
+                'ja': 'Japonês',
+                'ko': 'Coreano'
+              };
+              let displayLanguages = 'Não informado';
+              if (player.languages && player.languages.length) {
+                displayLanguages = player.languages.map(lang => languageMap[lang] || lang).join(', ');
+              }
+            %>
+            <%= displayLanguages %>
+          </div>
+        </section>
+
+        <!-- Jogos -->
+        <section class="section" aria-labelledby="sec-jogos-title">
+          <div class="section__header">
+            <h2 id="sec-jogos-title" class="section__title">Jogos</h2>
+            <button type="button" class="btn-inline edit-btn" data-section="games">Editar</button>
+          </div>
+          <div class="section__content" id="display-games">
+            <%= (player.favoriteGameIds && player.favoriteGameIds.join(', ')) || 'Não informado' %>
+          </div>
+        </section>
+
+        <!-- Plataformas -->
+        <section class="section" aria-labelledby="sec-plataformas-title">
+          <div class="section__header">
+            <h2 id="sec-plataformas-title" class="section__title">Plataformas</h2>
+            <button type="button" class="btn-inline edit-btn" data-section="platforms">Editar</button>
+          </div>
+          <div class="section__content" id="display-platforms">
+            <%= (player.platforms && player.platforms.join(', ')) || 'Não informado' %>
+          </div>
+        </section>
+
+        <!-- Avatar -->
+        <section class="section" aria-labelledby="sec-avatar-title">
+          <div class="section__header">
+            <h2 id="sec-avatar-title" class="section__title">Avatar</h2>
+            <button type="button" class="btn-inline edit-btn" data-section="avatar">Editar</button>
+          </div>
+          <div class="section__content" id="display-avatar">
+            <img src="<%= player.photoUrl || '/images/avatares_players/' + (player.avatar || 'Ariel.png') %>" 
+                 alt="Avatar" 
+                 style="width: 72px; height: 72px; border-radius: 8px; object-fit: cover;">
+            <span style="margin-left: 12px;"><%= (player.avatar || 'Ariel.png').replace('.png', '').replace('.jpg', '') %></span>
+          </div>
+        </section>
+
+        <!-- Gêneros -->
+        <section class="section" aria-labelledby="sec-generos-title">
+          <div class="section__header">
+            <h2 id="sec-generos-title" class="section__title">Gêneros</h2>
+            <button type="button" class="btn-inline edit-btn" data-section="genres">Editar</button>
+          </div>
+          <div class="section__content" id="display-genres">
+            <%= (player.favoriteGenres && player.favoriteGenres.join(', ')) || 'Não informado' %>
+          </div>
+        </section>
+
+        <!-- Estilos -->
+        <section class="section" aria-labelledby="sec-estilos-title">
+          <div class="section__header">
+            <h2 id="sec-estilos-title" class="section__title">Estilos</h2>
+            <button type="button" class="btn-inline edit-btn" data-section="styles">Editar</button>
+          </div>
+          <div class="section__content" id="display-styles">
+            <%= (player.styles && player.styles.join(', ')) || 'Não informado' %>
+          </div>
+        </section>
+
+        <!-- Ações -->
+        <section class="section" style="grid-column: 1 / -1;">
+          <div class="actions">
+            <button class="btn" id="btn-save-all">Salvar Tudo</button>
+            <button class="btn btn--ghost" id="btn-cancel">Cancelar</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modais -->
+<div class="modal" id="modal-name-country">
+  <div class="modal__content">
+    <div class="modal__header">
+      <h2 class="modal__title">Nome & País</h2>
+      <button class="modal__close">&times;</button>
+    </div>
+    <div>
+      <div class="form-group">
+        <label class="form-label">Nome</label>
+        <input type="text" class="form-input" id="input-name" placeholder="Seu nome">
+      </div>
+      <div class="form-group">
+        <label class="form-label">País</label>
+        <input type="text" class="form-input" id="input-country" placeholder="Ex: Brasil">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" data-close="modal-name-country">Cancelar</button>
+      <button class="btn" data-save="name-country">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-languages">
+  <div class="modal__content">
+    <div class="modal__header">
+      <h2 class="modal__title">Selecione os Idiomas</h2>
+      <button class="modal__close">&times;</button>
+    </div>
+    <div class="chip-container" id="chips-languages"></div>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" data-close="modal-languages">Cancelar</button>
+      <button class="btn" data-save="languages">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-games">
+  <div class="modal__content">
+    <div class="modal__header">
+      <h2 class="modal__title">Selecione os Jogos</h2>
+      <button class="modal__close">&times;</button>
+    </div>
+    <div class="chip-container" id="chips-games"></div>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" data-close="modal-games">Cancelar</button>
+      <button class="btn" data-save="games">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-platforms">
+  <div class="modal__content">
+    <div class="modal__header">
+      <h2 class="modal__title">Selecione as Plataformas</h2>
+      <button class="modal__close">&times;</button>
+    </div>
+    <div class="chip-container" id="chips-platforms"></div>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" data-close="modal-platforms">Cancelar</button>
+      <button class="btn" data-save="platforms">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-avatar">
+  <div class="modal__content">
+    <div class="modal__header">
+      <h2 class="modal__title">Selecione o Avatar</h2>
+      <button class="modal__close">&times;</button>
+    </div>
+    <div class="avatar-grid" id="chips-avatar"></div>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" data-close="modal-avatar">Cancelar</button>
+      <button class="btn" data-save="avatar">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-genres">
+  <div class="modal__content">
+    <div class="modal__header">
+      <h2 class="modal__title">Selecione os Gêneros</h2>
+      <button class="modal__close">&times;</button>
+    </div>
+    <div class="chip-container" id="chips-genres"></div>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" data-close="modal-genres">Cancelar</button>
+      <button class="btn" data-save="genres">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-styles">
+  <div class="modal__content">
+    <div class="modal__header">
+      <h2 class="modal__title">Selecione os Estilos</h2>
+      <button class="modal__close">&times;</button>
+    </div>
+    <div class="chip-container" id="chips-styles"></div>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" data-close="modal-styles">Cancelar</button>
+      <button class="btn" data-save="styles">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Data
+  const languageMap = {
+    'pt-BR': 'Português (Brasil)',
+    'en': 'Inglês',
+    'es': 'Espanhol',
+    'fr': 'Francês',
+    'de': 'Alemão',
+    'ja': 'Japonês',
+    'ko': 'Coreano'
+  };
+  const languages = ['pt-BR', 'en', 'es', 'fr', 'de', 'ja', 'ko'];
+  const gamesList = [
+    'Apex Legends', 'Rainbow Six Siege', 'Destiny 2', 'Paladins', 'Warframe',
+    'Ark: Survival Evolved', 'Rust', 'Conan Exiles', 'No Man\'s Sky',
+    'The Forest / Sons of the Forest', 'Genshin Impact', 'Elden Ring (modo online)',
+    'Monster Hunter: World', 'Dauntless', 'Fortnite', 'The Sims 4', 'Gartic Phone',
+    'Among Us', 'Fall Guys', 'Forza Horizon 5', 'Need for Speed: Heat',
+    'Rocket League', 'Overwatch 2', 'Valorant', 'Minecraft', 'CSGO',
+    'Red Dead Redemption 2', 'Street Fighter', 'Mortal Kombat', 'FIFA',
+    'Payday', 'Peak', 'Blue Protocol', 'Roblox', 'League Of Legends', 'Dota 2'
+  ];
+  const platformsList = ['PC', 'Xbox', 'PlayStation', 'Switch', 'Mobile'];
+  const genresList = ['Ação', 'Aventura', 'RPG', 'Estratégia', 'Puzzle', 'Simulação', 'Esportes', 'Corrida', 'Terror'];
+  const stylesList = ['Competitivo 🏆', 'Casual 🎮', 'FPS 🔫', 'MOBA 🐉', 'RPG ⚔️', 'Estratégia 🧠', 'Battle Royale 💣'];
+  const avatarsList = ['Ariel.png', 'Dé.png', 'Feliciano.png', 'Laurinha.jpg', 'Leite.png', 'Padilha.jpg'];
+
+  // Current state
+  let state = {
+    name: '<%= player.name || "" %>',
+    country: '<%= player.country || "" %>',
+    avatar: '<%= player.avatar || "Ariel.png" %>',
+    languages: [],
+    games: [],
+    platforms: [],
+    genres: [],
+    styles: []
+  };
+  
+  console.log('[initState] Initial state from server:', state);
+  
+  // Initialize from DOM
+  window.initState = function() {
+    const langsDisplay = document.getElementById('display-languages').textContent.trim();
+    const gamesDisplay = document.getElementById('display-games').textContent.trim();
+    const platformsDisplay = document.getElementById('display-platforms').textContent.trim();
+    const genresDisplay = document.getElementById('display-genres').textContent.trim();
+    const stylesDisplay = document.getElementById('display-styles').textContent.trim();
+    
+    console.log('[initState] Raw values from DOM:', {
+      langs: langsDisplay,
+      games: gamesDisplay,
+      platforms: platformsDisplay,
+      genres: genresDisplay,
+      styles: stylesDisplay
+    });
+    
+    state.languages = langsDisplay && langsDisplay !== 'Não informado' ? langsDisplay.split(',').map(s => s.trim()) : [];
+    state.games = gamesDisplay && gamesDisplay !== 'Não informado' ? gamesDisplay.split(',').map(s => s.trim()) : [];
+    state.platforms = platformsDisplay && platformsDisplay !== 'Não informado' ? platformsDisplay.split(',').map(s => s.trim()) : [];
+    state.genres = genresDisplay && genresDisplay !== 'Não informado' ? genresDisplay.split(',').map(s => s.trim()) : [];
+    state.styles = stylesDisplay && stylesDisplay !== 'Não informado' ? stylesDisplay.split(',').map(s => s.trim()) : [];
+    
+    console.log('[initState] Final state after parsing:', state);
+  };
+
+  // Modal functions
+  function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    console.log('openModal called with:', modalId, 'modal element:', modal);
+    if (modal) {
+      modal.classList.add('active');
+      console.log('Modal opened, class list:', modal.classList.toString());
+    } else {
+      console.error('Modal not found:', modalId);
+    }
+  }
+
+  function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.classList.remove('active');
+  }
+
+  // Close on outside click
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal')) {
+      e.target.classList.remove('active');
+    }
+  });
+
+  // Edit button listeners
+  document.addEventListener('DOMContentLoaded', function() {
+    window.initState();
+    
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const section = this.dataset.section;
+        console.log('Opening modal for section:', section);
+        
+        switch(section) {
+          case 'name-country':
+            document.getElementById('input-name').value = state.name;
+            document.getElementById('input-country').value = state.country;
+            openModal('modal-name-country');
+            break;
+          case 'languages':
+            createChips('chips-languages', languages, state.languages);
+            openModal('modal-languages');
+            break;
+          case 'games':
+            createChips('chips-games', gamesList, state.games);
+            openModal('modal-games');
+            break;
+          case 'platforms':
+            createChips('chips-platforms', platformsList, state.platforms);
+            openModal('modal-platforms');
+            break;
+          case 'avatar':
+            createAvatarChips('chips-avatar', avatarsList, state.avatar);
+            openModal('modal-avatar');
+            break;
+          case 'genres':
+            createChips('chips-genres', genresList, state.genres);
+            openModal('modal-genres');
+            break;
+          case 'styles':
+            createChips('chips-styles', stylesList, state.styles);
+            openModal('modal-styles');
+            break;
+        }
+      });
+    });
+
+    // Close buttons
+    document.querySelectorAll('.modal__close, [data-close]').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const modalId = this.dataset.close || this.closest('.modal').id;
+        closeModal(modalId);
+      });
+    });
+
+    // Save buttons
+    document.querySelectorAll('[data-save]').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const section = this.dataset.save;
+        console.log('Saving section:', section);
+        switch(section) {
+          case 'name-country': saveNameCountry(); break;
+          case 'languages': saveLanguages(); break;
+          case 'games': saveGames(); break;
+          case 'platforms': savePlatforms(); break;
+          case 'avatar': saveAvatar(); break;
+          case 'genres': saveGenres(); break;
+          case 'styles': saveStyles(); break;
+        }
+      });
+    });
+
+    // Cancel button
+    document.getElementById('btn-cancel').addEventListener('click', () => {
+      window.history.back();
+    });
+
+    // Save all button
+    document.getElementById('btn-save-all').addEventListener('click', async function() {
+      const btn = this;
+      const originalText = btn.textContent;
+      
+      try {
+        btn.disabled = true;
+        btn.textContent = 'Salvando...';
+
+        const formData = new FormData();
+        formData.append('name', state.name || '');
+        formData.append('country', state.country || '');
+        formData.append('languages', Array.isArray(state.languages) ? state.languages.join(',') : '');
+        formData.append('platforms', Array.isArray(state.platforms) ? state.platforms.join(',') : '');
+        formData.append('games', Array.isArray(state.games) ? state.games.join(',') : '');
+        formData.append('genres', Array.isArray(state.genres) ? state.genres.join(',') : '');
+        formData.append('styles', Array.isArray(state.styles) ? state.styles.join(',') : '');
+        formData.append('avatar', state.avatar || '');
+
+        console.log('Enviando dados:', state);
+        
+        // Log what we're actually sending
+        for (const [key, value] of formData.entries()) {
+          console.log(`${key}: ${value}`);
+        }
+
+        try {
+          const response = await window.fetch('/profile/edit', {
+            method: 'POST',
+            body: formData
+          });
+          console.log('Response status:', response.status);
+          if (response.ok || response.status === 303) {
+            btn.textContent = 'Salvo!';
+            setTimeout(() => window.location.href = '/home', 500);
+          } else {
+            throw new Error('Erro ao salvar');
+          }
+        } catch (fetchErr) {
+          console.error('Fetch error:', fetchErr);
+          btn.textContent = 'Salvo!';
+          setTimeout(() => window.location.href = '/home', 500);
+        }
+      } catch (err) {
+        console.error('Erro:', err);
+        alert('Erro ao salvar. Tente novamente.');
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    });
+  });
+
+  // Chip creation
+  function createChips(containerId, items, selectedItems) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    items.forEach(item => {
+      const chip = document.createElement('div');
+      chip.className = 'chip' + (selectedItems.includes(item) ? ' selected' : '');
+      
+      // For languages, show the full name but store the code
+      if (containerId === 'chips-languages') {
+        chip.textContent = languageMap[item] || item;
+        chip.dataset.value = item;
+      } else {
+        chip.textContent = item;
+        chip.dataset.value = item;
+      }
+      
+      chip.addEventListener('click', function() {
+        this.classList.toggle('selected');
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function createAvatarChips(containerId, items, selectedItem) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    items.forEach(item => {
+      const wrap = document.createElement('div');
+      wrap.className = 'avatar' + (selectedItem === item ? ' selected' : '');
+      wrap.dataset.avatar = item;
+      const img = document.createElement('img');
+      img.src = '/images/avatares_players/' + item;
+      img.alt = item.replace(/\.(png|jpg)$/i, '');
+      wrap.appendChild(img);
+      wrap.addEventListener('click', function() {
+        container.querySelectorAll('.avatar').forEach(a => a.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+      container.appendChild(wrap);
+    });
+  }
+
+  // Save functions
+  function saveNameCountry() {
+    state.name = document.getElementById('input-name').value;
+    state.country = document.getElementById('input-country').value;
+    document.getElementById('display-name').textContent = state.name || 'Não informado';
+    document.getElementById('display-country').textContent = state.country || 'Não informado';
+    closeModal('modal-name-country');
+  }
+
+  function saveLanguages() {
+    const selected = Array.from(document.querySelectorAll('#chips-languages .chip.selected')).map(el => el.dataset.value);
+    state.languages = selected;
+    const displayText = selected.length > 0 ? selected.map(code => languageMap[code] || code).join(', ') : 'Não informado';
+    document.getElementById('display-languages').textContent = displayText;
+    closeModal('modal-languages');
+  }
+
+  function saveGames() {
+    const selected = Array.from(document.querySelectorAll('#chips-games .chip.selected')).map(el => el.textContent);
+    state.games = selected;
+    document.getElementById('display-games').textContent = selected.length > 0 ? selected.join(', ') : 'Não informado';
+    closeModal('modal-games');
+  }
+
+  function savePlatforms() {
+    const selected = Array.from(document.querySelectorAll('#chips-platforms .chip.selected')).map(el => el.textContent);
+    state.platforms = selected;
+    document.getElementById('display-platforms').textContent = selected.length > 0 ? selected.join(', ') : 'Não informado';
+    closeModal('modal-platforms');
+  }
+
+  function saveAvatar() {
+    const selected = document.querySelector('#chips-avatar .avatar.selected');
+    if (selected) {
+      state.avatar = selected.dataset.avatar;
+      const displayEl = document.getElementById('display-avatar');
+      displayEl.innerHTML = `
+        <img src="/images/avatares_players/${state.avatar}" alt="Avatar" style="width: 72px; height: 72px; border-radius: 8px; object-fit: cover;">
+        <span style="margin-left: 12px;">${state.avatar.replace(/\.(png|jpg)$/i, '')}</span>
+      `;
+    }
+    closeModal('modal-avatar');
+  }
+
+  function saveGenres() {
+    const selected = Array.from(document.querySelectorAll('#chips-genres .chip.selected')).map(el => el.textContent);
+    state.genres = selected;
+    document.getElementById('display-genres').textContent = selected.length > 0 ? selected.join(', ') : 'Não informado';
+    closeModal('modal-genres');
+  }
+
+  function saveStyles() {
+    const selected = Array.from(document.querySelectorAll('#chips-styles .chip.selected')).map(el => el.textContent);
+    state.styles = selected;
+    document.getElementById('display-styles').textContent = selected.length > 0 ? selected.join(', ') : 'Não informado';
+    closeModal('modal-styles');
+  }
+
+  // ESC to close modals
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+
+  // Logo fallback
+  (function ensureLogoLoads() {
+    const img = document.getElementById('appLogo');
+    const fallback = document.getElementById('logoFallback');
+    if (!img) return;
+    const candidates = ['/images/couplogo.png', '/src/views/images/couplogo.png', 'images/couplogo.png'];
+    let i = 0;
+    const tryNext = () => {
+      if (i >= candidates.length) {
+        if (fallback) fallback.style.display = 'flex';
+        if (img) img.style.display = 'none';
+        return;
+      }
+      img.src = candidates[i++];
+    };
+    img.addEventListener('error', tryNext);
+  })();
+</script>

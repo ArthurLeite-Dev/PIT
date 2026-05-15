@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title><%= title %> - Perfil Gamer</title>
+
+  <!-- Estilos customizados no próprio arquivo para facilitar testes -->
+  <style>
+    /* ===== Variáveis de tema ===== */
+    :root{
+      --bg:#23242a;               /* fundo geral */
+      --card:#2b2e33;             /* card escuro */
+      --accent:#7ef9b6;           /* neon verde (accent) */
+      --muted:#9aa0a6;            /* texto secundário */
+      --danger:#ff6b6b;
+      --radius:14px;
+      --glass: rgba(255,255,255,0.03);
+      --shadow: 0 6px 24px rgba(0,0,0,0.6);
+      --maxw:720px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* ===== Reset básico ===== */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;padding:0;background:var(--bg);color:#e6eef1;}
+    body{display:flex;flex-direction:column;}
+
+    /* ===== Header ===== */
+    header{background:var(--card);padding:16px;border-bottom:1px solid rgba(126,249,182,0.1);}
+    header h1{margin:0;font-size:24px;font-weight:600;color:var(--accent);}
+    header p{margin:4px 0 0 0;font-size:14px;color:var(--muted);}
+
+    /* ===== Main ===== */
+    main{flex:1;padding:20px;max-width:var(--maxw);margin:0 auto;width:100%;}
+
+    /* ===== Notification Card ===== */
+    .notification-card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border-radius:12px;
+      padding:16px;
+      border:1px solid rgba(126,249,182,0.1);
+      margin-bottom:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .notification-card.unread{background:linear-gradient(180deg, rgba(126,249,182,0.05), transparent);border-color:var(--accent);}
+    .notification-content{flex:1;}
+    .notification-message{font-weight:500;color:#e6eef1;}
+    .notification-time{font-size:12px;color:var(--muted);margin-top:4px;}
+    .notification-actions{display:flex;gap:8px;}
+    .btn{background:var(--glass);border:none;border-radius:8px;padding:8px 12px;color:var(--muted);cursor:pointer;transition:background 0.2s;}
+    .btn:hover{background:rgba(126,249,182,0.1);}
+    .btn.primary{background:var(--accent);color:#04231a;font-weight:600;}
+    .btn.primary:hover{background:rgba(126,249,182,0.8);}
+
+    /* ===== Empty State ===== */
+    .empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+    .empty-state h3{margin:0 0 8px 0;font-size:18px;color:#e6eef1;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1><%= title %></h1>
+    <p><%= subtitle %></p>
+  </header>
+
+  <main>
+    <% if (notifications && notifications.length > 0) { %>
+      <% notifications.forEach(notification => { %>
+        <div class="notification-card <%= notification.read ? '' : 'unread' %>">
+          <div class="notification-content">
+            <div class="notification-message"><%= notification.message %></div>
+            <div class="notification-time"><%= new Date(notification.createdAt).toLocaleString('pt-BR') %></div>
+          </div>
+          <div class="notification-actions">
+            <% if (!notification.read) { %>
+              <button class="btn primary" onclick="markAsRead('<%= notification.id %>')">Marcar como lida</button>
+            <% } %>
+            <button class="btn" onclick="deleteNotification('<%= notification.id %>')">Excluir</button>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <div class="empty-state">
+        <h3>Nenhuma notificação</h3>
+        <p>Você não tem notificações no momento.</p>
+      </div>
+    <% } %>
+  </main>
+
+  <script>
+    async function markAsRead(id) {
+      try {
+        const response = await fetch(`/notifications/${id}/read`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (response.ok) {
+          location.reload();
+        } else {
+          alert('Erro ao marcar como lida');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Erro ao marcar como lida');
+      }
+    }
+
+    async function deleteNotification(id) {
+      if (!confirm('Tem certeza que deseja excluir esta notificação?')) return;
+      try {
+        const response = await fetch(`/notifications/${id}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (response.ok) {
+          location.reload();
+        } else {
+          alert('Erro ao excluir notificação');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Erro ao excluir notificação');
+      }
+    }
+  </script>
+</body>
+</html>

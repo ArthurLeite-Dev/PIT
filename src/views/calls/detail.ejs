@@ -1,0 +1,418 @@
+<% layout('layout') -%>
+
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet"/>
+
+<style>
+  :root{
+    --bg-app:#0F1016;
+    --bg-card:#1E202D;
+    --txt-field:#778C8A;
+    --txt-light-green:#BDFFD3;
+    --txt-white-green:#E5FFF5;
+    --g-main:#39df79;
+    --g-ico:#04BF8A;
+    --r-lg:14px;
+    --r-md:10px;
+    --shadow-card:0 18px 38px rgba(0,0,0,.45);
+    --shadow-focus:0 0 0 3px rgba(72,222,141,.3);
+    --tr-fast:.15s ease;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;padding:0}
+
+  body{
+    min-height:100dvh;
+    background:var(--bg-app);
+    color:var(--txt-white-green);
+    font-family:"Asap",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .call-overlay{
+    position:fixed;
+    inset:0;
+    background:var(--bg-app);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    z-index:9999;
+    isolation:isolate;
+    overflow-y:auto;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .call-wrapper{
+    width:min(900px, 92vw);
+  }
+
+  .call-card{
+    background:var(--bg-card);
+    border-radius:var(--r-lg);
+    padding:clamp(22px,4vw,34px);
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+    position:relative;
+    margin-bottom:20px;
+  }
+
+  .call-title{
+    text-align:center;
+    font-family:"Barlow",sans-serif;
+    font-weight:700;
+    font-size:clamp(1.8rem,3vw,2.4rem);
+    color:var(--txt-white-green);
+    margin:0 0 12px 0;
+  }
+
+  .call-badges{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 12px;
+    border-radius:999px;
+    background:var(--bg-app);
+    border:1px solid rgba(229,255,245,.14);
+    color:var(--txt-light-green);
+    font-size:13px;
+    font-weight:500;
+  }
+
+  .section{
+    background:var(--bg-app);
+    border:1px solid rgba(229,255,245,.10);
+    border-radius:var(--r-lg);
+    padding:16px;
+    margin-bottom:16px;
+  }
+
+  .section-title{
+    font-family:"Barlow",sans-serif;
+    color:var(--txt-light-green);
+    font-weight:700;
+    letter-spacing:.2px;
+    margin:0 0 12px 0;
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .section-content{
+    color:var(--txt-white-green);
+  }
+
+  .participant-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px;
+    background:var(--bg-card);
+    border:1px solid rgba(229,255,245,.08);
+    border-radius:var(--r-md);
+    margin-bottom:8px;
+  }
+
+  .participant-item:last-child{
+    margin-bottom:0;
+  }
+
+  .participant-info{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:1;
+  }
+
+  .avatar{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--g-main);
+  }
+
+  .avatar-placeholder{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:var(--bg-card);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid var(--g-main);
+    font-weight:700;
+    color:var(--txt-white-green);
+  }
+
+  .participant-name{
+    color:var(--txt-white-green);
+    font-weight:500;
+    font-size:14px;
+    text-decoration:none;
+  }
+
+  .participant-name:hover{
+    opacity:.8;
+  }
+
+  .action-buttons{
+    display:flex;
+    gap:8px;
+  }
+
+  .action-link{
+    color:var(--txt-light-green);
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    transition:opacity var(--tr-fast);
+  }
+
+  .action-link:hover{
+    opacity:.8;
+  }
+
+  .btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    border-radius:999px;
+    padding:12px 20px;
+    font-family:"Atkinson Hyperlegible",sans-serif;
+    font-weight:700;
+    letter-spacing:.4px;
+    transition:transform .06s ease,box-shadow .2s ease,filter .2s ease;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    text-decoration:none;
+    min-height:40px;
+  }
+
+  .btn--primary{
+    background:linear-gradient(135deg,var(--g-main),#48DE8D);
+    color:var(--bg-card);
+    box-shadow:0 10px 22px rgba(72,222,141,.28), inset 0 -2px 0 rgba(0,0,0,.25);
+    border:1px solid rgba(72,222,141,.45);
+  }
+
+  .btn--primary:hover{filter:brightness(1.06);}
+  .btn--primary:active{transform:translateY(1px);}
+
+  .btn--secondary{
+    background:var(--bg-app);
+    color:var(--txt-white-green);
+    border:1px solid rgba(229,255,245,.20);
+  }
+
+  .btn--secondary:hover{
+    background:rgba(229,255,245,.06);
+  }
+
+  .btn--danger{
+    background:#ef4444;
+    color:#fff;
+    border:1px solid rgba(239,68,68,.45);
+    box-shadow:0 10px 22px rgba(239,68,68,.28);
+  }
+
+  .btn--danger:hover{
+    background:#dc2626;
+  }
+
+  .btn--outline{
+    background:transparent;
+    color:var(--txt-white-green);
+    border:1px solid rgba(229,255,245,.20);
+  }
+
+  .btn--outline:hover{
+    background:rgba(229,255,245,.06);
+  }
+
+  .btn-group{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .btn-group.vertical{
+    flex-direction:column;
+  }
+
+  .call-actions{
+    margin-top:24px;
+  }
+</style>
+
+<div class="call-overlay">
+  <div class="call-wrapper">
+    <div class="call-card">
+      <!-- Título e badges -->
+      <h1 class="call-title"><%= call.title %></h1>
+      <div class="call-badges">
+        <span class="badge">🎮 <%= call.gameId %></span>
+        <span class="badge">💻 <%= call.platform %></span>
+        <span class="badge">👥 <%= call.participants.length %> participantes</span>
+      </div>
+
+      <!-- Descrição -->
+      <% if (call.description) { %>
+        <div class="section">
+          <h3 class="section-title">📝 Sobre este chamado</h3>
+          <div class="section-content"><%= call.description %></div>
+        </div>
+      <% } %>
+
+      <!-- Botão para entrar se não está participando -->
+      <% if (!call.participants.includes(player?.id)) { %>
+        <div class="section" style="text-align: center;">
+          <p style="margin-bottom: 16px; color: var(--txt-light-green);">Você ainda não está participando deste chamado</p>
+          <form action="/calls/<%= call.id %>/join" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn--primary">Entrar no Chamado</button>
+          </form>
+        </div>
+      <% } %>
+
+      <!-- Conteúdo para participantes -->
+      <% if (call.participants.includes(player?.id)) { %>
+        <!-- Participantes -->
+        <div class="section">
+          <h3 class="section-title">👥 Participantes</h3>
+          <% participantsData.forEach((participant) => { %>
+            <div class="participant-item">
+              <div class="participant-info">
+                <a href="/profile/<%= participant.uid %>" class="participant-info">
+                  <% if (participant.photoUrl) { %>
+                    <img src="<%= participant.photoUrl %>" alt="<%= participant.name %>" class="avatar">
+                  <% } else { %>
+                    <div class="avatar-placeholder">
+                      <%= participant.name.charAt(0).toUpperCase() %>
+                    </div>
+                  <% } %>
+                  <span class="participant-name"><%= participant.name %></span>
+                </a>
+              </div>
+              <div class="action-buttons">
+                <% if (participant.uid !== player?.id && !participant.isFriend) { %>
+                  <form action="/friends/add" method="POST" class="inline">
+                    <input type="hidden" name="friendUid" value="<%= participant.uid %>" />
+                    <button type="submit" class="action-link">Adicionar Amigo</button>
+                  </form>
+                <% } %>
+                <% if (participant.uid !== player?.id) { %>
+                  <a href="/block/report/<%= participant.uid %>" class="action-link" style="color: #ef4444;">🚨 Denunciar</a>
+                <% } %>
+                <% if (call.ownerUid === player?.id && participant.uid !== player?.id) { %>
+                  <form action="/calls/<%= call.id %>/remove/<%= participant.uid %>" method="POST" class="inline">
+                    <button type="submit" class="action-link" style="color: #ef4444;">Remover</button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <!-- Ações do Chamado -->
+        <div class="section">
+          <h3 class="section-title">⚡ Ações</h3>
+          <div class="section-content" style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="btn-group">
+              <button id="shareCallBtn" class="btn btn--secondary">Compartilhar</button>
+              <a href="/home" class="btn btn--outline">Voltar</a>
+            </div>
+            <% if (call.ownerUid !== player?.id) { %>
+            <form id="leaveCallForm" action="/calls/<%= call.id %>/leave" method="POST">
+              <button type="submit" class="btn btn--danger" style="width: 100%;" id="leaveCallBtn">
+                Sair do Chamado
+              </button>
+            </form>
+            <% } %>
+            <% if (call.ownerUid === player?.id) { %>
+            <form action="/calls/<%= call.id %>/close" method="POST">
+              <button type="submit" class="btn btn--danger" style="width: 100%;">
+                Fechar Chamado
+              </button>
+            </form>
+            <% } %>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const shareBtn = document.getElementById('shareCallBtn');
+    if (!shareBtn) return;
+
+    shareBtn.addEventListener('click', function() {
+      const url = window.location.href;
+      const title = '<%= call.title %>';
+      const description = '<%= call.description || "Venha jogar comigo!" %>';
+      
+      // Verifica se o navegador suporta a API de compartilhamento
+      if (navigator.share) {
+        navigator.share({
+          title: title,
+          text: description,
+          url: url
+        })
+        .then(() => console.log('Compartilhamento bem-sucedido'))
+        .catch((error) => console.log('Erro ao compartilhar:', error));
+      } else {
+        // Fallback: copia a URL para a área de transferência
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(() => {
+            alert('Link do chamado copiado para a área de transferência! Cole e compartilhe.');
+          }).catch(() => {
+            fallbackCopy(url);
+          });
+        } else {
+          fallbackCopy(url);
+        }
+      }
+    });
+  });
+
+  function fallbackCopy(url) {
+    const textArea = document.createElement('textarea');
+    textArea.value = url;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      alert('Link do chamado copiado para a área de transferência! Cole e compartilhe.');
+    } catch (err) {
+      console.error('Erro ao copiar:', err);
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  }
+
+  // Handle leave call button
+  const leaveCallForm = document.getElementById('leaveCallForm');
+  if (leaveCallForm) {
+    leaveCallForm.addEventListener('submit', function(e) {
+      if (!confirm('Tem certeza que deseja sair do chamado?')) {
+        e.preventDefault();
+      }
+    });
+  }
+</script>

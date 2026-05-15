@@ -1,0 +1,362 @@
+<% layout('layout') -%>
+
+<div class="consent-wrapper">
+  <div class="consent-container">
+    <div class="logo-container">
+      <img src="/images/couplogo.png" alt="Logo Co-Up" class="consent-logo" />
+    </div>
+    <h1>TERMO DE CONSENTIMENTO LGPD</h1>
+    <p class="last-update"><strong>Última atualização:</strong> 27/01/2025</p>
+    
+    <div class="intro">
+      <p>Em conformidade com a <strong>Lei Geral de Proteção de Dados Pessoais (LGPD – Lei nº 13.709/2018)</strong>, solicitamos seu consentimento explícito para o tratamento dos seus dados pessoais conforme as finalidades descritas abaixo. Você tem o direito de aceitar, recusar ou revogar seu consentimento a qualquer momento.</p>
+    </div>
+
+    <form action="/consent" method="POST" class="consent-form">
+      <input type="hidden" name="_csrf" value="<%= locals._csrf || '' %>">
+      
+      <div class="consent-section">
+        <h2>📊 FINALIDADES DO TRATAMENTO DE DADOS</h2>
+        
+        <div class="consent-item">
+          <label class="consent-checkbox">
+            <input type="checkbox" name="purposes" value="essential" checked disabled>
+            <span class="checkmark"></span>
+            <div class="consent-content">
+              <strong>Funcionalidades Essenciais do Serviço</strong>
+              <p>Uso obrigatório para utilização da plataforma: autenticação, criação de perfil, conexão entre jogadores, gerenciamento de amizades, notificações e suporte técnico.</p>
+              <span class="badge badge-essential">Obrigatório</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="consent-item">
+          <label class="consent-checkbox">
+            <input type="checkbox" name="purposes" value="personalization">
+            <span class="checkmark"></span>
+            <div class="consent-content">
+              <strong>Personalização de Experiência</strong>
+              <p>Sugestões de jogadores compatíveis, recomendações de chamados LFG, customização de interface e conteúdo baseado em suas preferências de jogo.</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="consent-item">
+          <label class="consent-checkbox">
+            <input type="checkbox" name="purposes" value="analytics">
+            <span class="checkmark"></span>
+            <div class="consent-content">
+              <strong>Análise e Melhoria do Serviço</strong>
+              <p>Coleta de métricas de uso, análise de comportamento (anonimizado), identificação de melhorias na plataforma e desenvolvimento de novas funcionalidades.</p>
+            </div>
+          </label>
+        </div>
+
+        <div class="consent-item">
+          <label class="consent-checkbox">
+            <input type="checkbox" name="purposes" value="marketing">
+            <span class="checkmark"></span>
+            <div class="consent-content">
+              <strong>Comunicações de Marketing</strong>
+              <p>Envio de novidades sobre a plataforma, novos recursos, eventos especiais e ofertas relacionadas a jogos (você pode cancelar a qualquer momento).</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="consent-rights">
+        <h2>🔐 SEUS DIREITOS</h2>
+        <p>Ao fornecer seu consentimento, você mantém os seguintes direitos garantidos pela LGPD:</p>
+        <ul>
+          <li>✅ <strong>Acesso:</strong> Solicitar informações sobre quais dados pessoais estão sendo tratados</li>
+          <li>✅ <strong>Correção:</strong> Requerer correção de dados incompletos, inexatos ou desatualizados</li>
+          <li>✅ <strong>Eliminação:</strong> Solicitar a exclusão de seus dados pessoais quando não forem mais necessários</li>
+          <li>✅ <strong>Portabilidade:</strong> Receber seus dados em formato estruturado e interoperável</li>
+          <li>✅ <strong>Oposição:</strong> Opor-se ao tratamento de dados pessoais para fins específicos</li>
+          <li>✅ <strong>Revogação:</strong> Retirar seu consentimento a qualquer momento, sem afetar a legalidade do tratamento anterior</li>
+        </ul>
+        <p class="revoke-info">
+          Para revogar seu consentimento, acesse: <a href="/consent/revoke">Página de Revogação</a>
+        </p>
+      </div>
+
+      <div class="consent-actions">
+        <button type="submit" class="btn btn--primary">
+          ✅ Concordar e Salvar
+        </button>
+        <a href="/home" class="btn btn--secondary">
+          🔙 Voltar para Home
+        </a>
+      </div>
+    </form>
+
+    <div class="help-text">
+      <p>💡 <strong>Dúvidas?</strong> Entre em contato: <a href="mailto:suporte.coup@gmail.com">suporte.coup@gmail.com</a></p>
+      <p>📋 Leia também: <a href="/terms">Termos de Uso</a></p>
+    </div>
+  </div>
+</div>
+
+<style>
+.consent-wrapper {
+  min-height: 100vh;
+  background: var(--bg-app, #0F1016);
+  padding: 40px 20px;
+  color: #E5FFF5;
+  font-family: "Asap", system-ui, sans-serif;
+}
+
+.consent-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--bg-card, #1E202D);
+  border-radius: 14px;
+  padding: 40px;
+  box-shadow: 0 18px 38px rgba(0,0,0,.45);
+  border: 1px solid rgba(229, 255, 245, 0.1);
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.consent-logo {
+  max-width: 180px;
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.consent-container h1 {
+  color: var(--g-main, #39df79);
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.last-update {
+  text-align: center;
+  color: var(--txt-field, #778C8A);
+  margin-bottom: 40px;
+  font-size: 0.9rem;
+}
+
+.intro {
+  margin-bottom: 40px;
+  line-height: 1.8;
+  padding: 24px;
+  background: rgba(57, 223, 121, 0.05);
+  border-radius: 10px;
+  border-left: 4px solid #39df79;
+}
+
+.consent-section {
+  margin-bottom: 40px;
+}
+
+.consent-section h2 {
+  color: var(--g-main, #39df79);
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 24px;
+  border-bottom: 2px solid rgba(57, 223, 121, 0.2);
+  padding-bottom: 8px;
+}
+
+.consent-item {
+  margin-bottom: 24px;
+  background: rgba(229, 255, 245, 0.03);
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid rgba(229, 255, 245, 0.05);
+  transition: all 0.3s ease;
+}
+
+.consent-item:hover {
+  background: rgba(229, 255, 245, 0.05);
+  border-color: rgba(57, 223, 121, 0.3);
+}
+
+.consent-checkbox {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.consent-checkbox input[type="checkbox"] {
+  margin-right: 16px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #39df79;
+}
+
+.consent-checkbox input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+
+.consent-content {
+  flex: 1;
+}
+
+.consent-content strong {
+  color: var(--g-main, #39df79);
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.consent-content p {
+  color: var(--txt-light-green, #BDFFD3);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-essential {
+  background: rgba(239, 68, 68, 0.2);
+  color: #F87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.consent-rights {
+  margin-bottom: 40px;
+  padding: 24px;
+  background: rgba(57, 223, 121, 0.05);
+  border-radius: 10px;
+  border-left: 4px solid #39df79;
+}
+
+.consent-rights h2 {
+  color: var(--g-main, #39df79);
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 16px;
+}
+
+.consent-rights p {
+  line-height: 1.8;
+  margin-bottom: 16px;
+  color: var(--txt-white-green, #E5FFF5);
+}
+
+.consent-rights ul {
+  margin-left: 30px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.consent-rights li {
+  line-height: 1.8;
+  margin-bottom: 12px;
+  color: var(--txt-light-green, #BDFFD3);
+}
+
+.consent-rights strong {
+  color: var(--g-main, #39df79);
+}
+
+.revoke-info {
+  margin-top: 20px !important;
+  padding-top: 20px;
+  border-top: 1px solid rgba(229, 255, 245, 0.1);
+}
+
+.consent-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+  padding-top: 40px;
+  border-top: 2px solid rgba(229, 255, 245, 0.1);
+}
+
+.btn {
+  flex: 1;
+  display: inline-block;
+  padding: 14px 36px;
+  background: var(--g-main, #39df79);
+  color: var(--bg-app, #0F1016);
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  border-radius: 999px;
+  transition: all 0.15s ease;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(57, 223, 121, 0.3);
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn--primary:hover {
+  background: var(--g-ico, #04BF8A);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(57, 223, 121, 0.4);
+}
+
+.btn--secondary {
+  background: rgba(229, 255, 245, 0.1);
+  color: var(--txt-white-green, #E5FFF5);
+  border: 2px solid rgba(229, 255, 245, 0.3);
+  box-shadow: none;
+}
+
+.btn--secondary:hover {
+  background: rgba(229, 255, 245, 0.15);
+  border-color: rgba(57, 223, 121, 0.5);
+}
+
+.help-text {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(229, 255, 245, 0.1);
+  font-size: 0.95rem;
+}
+
+.help-text p {
+  margin-bottom: 12px;
+  color: var(--txt-field, #778C8A);
+}
+
+.help-text a {
+  color: var(--g-main, #39df79);
+  text-decoration: underline;
+}
+
+.help-text a:hover {
+  color: var(--g-ico, #04BF8A);
+}
+
+@media (max-width: 768px) {
+  .consent-wrapper {
+    padding: 20px 12px;
+  }
+  
+  .consent-container {
+    padding: 24px;
+  }
+  
+  .consent-container h1 {
+    font-size: 1.5rem;
+  }
+  
+  .consent-actions {
+    flex-direction: column;
+  }
+}
+</style>
+

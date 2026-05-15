@@ -1,0 +1,384 @@
+<% layout('layout') -%>
+
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet"/>
+
+<style>
+  :root{
+    --bg-app:#0F1016;
+    --bg-card:#1E202D;
+    --txt-field:#778C8A;
+    --txt-light-green:#BDFFD3;
+    --txt-white-green:#E5FFF5;
+    --g-main:#39df79;
+    --g-ico:#04BF8A;
+    --r-lg:14px;
+    --r-md:10px;
+    --shadow-card:0 18px 38px rgba(0,0,0,.45);
+    --tr-fast:.15s ease;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;padding:0}
+
+  body{
+    min-height:100dvh;
+    background:var(--bg-app);
+    color:var(--txt-white-green);
+    font-family:"Asap",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .block-overlay{
+    position:fixed;
+    inset:0;
+    background:var(--bg-app);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    z-index:9999;
+    isolation:isolate;
+    overflow-y:auto;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .block-wrapper{
+    width:min(600px, 92vw);
+    margin:0 auto;
+  }
+
+  .block-card{
+    background:var(--bg-card);
+    border-radius:var(--r-lg);
+    padding:clamp(22px,4vw,34px);
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+    position:relative;
+  }
+
+  .block-header{
+    text-align:center;
+    margin-bottom:24px;
+    border-bottom:1px solid rgba(229,255,245,.1);
+    padding-bottom:20px;
+  }
+
+  .block-icon{
+    font-size:3rem;
+    margin-bottom:12px;
+  }
+
+  .block-title{
+    font-family:"Barlow",sans-serif;
+    font-weight:700;
+    font-size:clamp(1.5rem,3vw,2rem);
+    color:var(--txt-white-green);
+    margin:8px 0;
+  }
+
+  .block-subtitle{
+    color:var(--txt-field);
+    font-size:0.9rem;
+    margin-top:8px;
+  }
+
+  .user-preview{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    background:var(--bg-app);
+    border:1px solid rgba(229,255,245,.1);
+    border-radius:var(--r-md);
+    padding:16px;
+    margin-bottom:24px;
+  }
+
+  .user-avatar{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--g-main);
+  }
+
+  .user-info{
+    flex:1;
+  }
+
+  .user-name{
+    color:var(--txt-white-green);
+    font-weight:600;
+    font-size:1.1rem;
+    margin-bottom:4px;
+  }
+
+  .user-label{
+    color:var(--txt-field);
+    font-size:0.85rem;
+  }
+
+  .info-box{
+    background:rgba(57,223,121,.1);
+    border:1px solid rgba(57,223,121,.3);
+    border-radius:var(--r-md);
+    padding:20px;
+    margin-bottom:16px;
+    color:var(--txt-white-green);
+    font-size:0.95rem;
+    line-height:1.6;
+  }
+
+  .info-box h3{
+    color:var(--txt-light-green);
+    font-size:1.1rem;
+    margin:0 0 12px 0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .email-address-box{
+    background:var(--bg-app);
+    border:2px solid rgba(57,223,121,.4);
+    border-radius:8px;
+    padding:16px;
+    margin:16px 0;
+    text-align:center;
+  }
+
+  .email-address{
+    font-family:monospace;
+    font-size:1.2rem;
+    color:var(--g-main);
+    font-weight:600;
+    word-break:break-all;
+    margin:8px 0;
+    display:block;
+  }
+
+  .copy-btn{
+    background:var(--g-main);
+    color:#0F1016;
+    border:none;
+    padding:8px 16px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:var(--tr-fast);
+    margin-top:12px;
+  }
+
+  .copy-btn:hover{
+    background:#04BF8A;
+    transform:translateY(-2px);
+  }
+
+  .instructions-list{
+    list-style:none;
+    padding:0;
+    margin:16px 0;
+  }
+
+  .instructions-list li{
+    padding:12px 0;
+    padding-left:40px;
+    position:relative;
+    color:var(--txt-white-green);
+    line-height:1.6;
+    border-bottom:1px solid rgba(229,255,245,.05);
+  }
+
+  .instructions-list li:last-child{
+    border-bottom:none;
+  }
+
+  .instructions-list li::before{
+    content:"📌";
+    position:absolute;
+    left:0;
+    top:12px;
+    font-size:1.2rem;
+  }
+
+  .action-buttons{
+    display:flex;
+    gap:12px;
+    margin-top:24px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .btn{
+    padding:12px 24px;
+    border-radius:999px;
+    border:none;
+    font-weight:700;
+    font-family:"Atkinson Hyperlegible",sans-serif;
+    transition:var(--tr-fast);
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    background:var(--bg-app);
+    color:var(--txt-white-green);
+    border:1px solid rgba(229,255,245,.2);
+  }
+
+  .btn:hover{
+    background:rgba(229,255,245,.06);
+  }
+
+  .mail-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:var(--g-main);
+    text-decoration:none;
+    font-weight:600;
+    transition:var(--tr-fast);
+    background:rgba(57,223,121,.1);
+    border:1px solid rgba(57,223,121,.3);
+    padding:12px 24px;
+    border-radius:999px;
+  }
+
+  .mail-link:hover{
+    color:#04BF8A;
+    background:rgba(57,223,121,.2);
+  }
+
+  .btn--danger{
+    background:#ef4444;
+    color:white;
+    border:1px solid rgba(239,68,68,.45);
+  }
+
+  .btn--danger:hover{
+    background:#dc2626;
+    transform:translateY(-2px);
+  }
+
+  .warning-box{
+    background:rgba(239,68,68,.1);
+    border:1px solid rgba(239,68,68,.3);
+    border-radius:var(--r-md);
+    padding:16px;
+    margin-bottom:16px;
+    color:var(--txt-white-green);
+    font-size:0.9rem;
+    line-height:1.6;
+  }
+
+  .warning-box strong{
+    color:#ef4444;
+    font-weight:600;
+  }
+
+  .block-form{
+    margin-top:24px;
+  }
+</style>
+
+<div class="block-overlay">
+  <div class="block-wrapper">
+    <div class="block-card">
+      <div class="block-header">
+        <div class="block-icon">🚨</div>
+        <h1 class="block-title">Denunciar Usuário</h1>
+        <p class="block-subtitle">Como proceder com a denúncia</p>
+      </div>
+
+      <div class="user-preview">
+        <img src="<%= reportedPhotoUrl %>" alt="<%= reportedName %>" class="user-avatar" />
+        <div class="user-info">
+          <div class="user-name"><%= reportedName %></div>
+          <div class="user-label">Usuário a ser denunciado</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3>✉️ Como fazer a denúncia</h3>
+        <p style="margin-bottom:16px;">Para denunciar este usuário, envie um email para nosso suporte com os detalhes da situação.</p>
+        
+        <div class="email-address-box">
+          <div style="color:var(--txt-field); font-size:0.85rem; margin-bottom:8px;">Envie seu email para:</div>
+          <span class="email-address" id="emailAddress">suporte.coup@gmail.com</span>
+          <button class="copy-btn" onclick="copyEmail()">📋 Copiar Email</button>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3>📝 O que incluir no email:</h3>
+        <ul class="instructions-list">
+          <li>Seu nome de usuário no sistema</li>
+          <li>O nome do usuário que você está denunciando: <strong><%= reportedName %></strong></li>
+          <li>Motivo detalhado da denúncia</li>
+          <li>Qualquer evidência, prints, conversas ou informações relevantes</li>
+          <li>Data e hora aproximada dos incidentes (se aplicável)</li>
+        </ul>
+      </div>
+
+      <div class="info-box" style="background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.3);">
+        <h3 style="color:#ef4444;">⚠️ Importante</h3>
+        <p style="margin:0;">Nossa equipe de suporte analisará sua denúncia e tomará as medidas necessárias. Você receberá uma resposta por email assim que a análise for concluída.</p>
+      </div>
+
+      <div class="warning-box">
+        <strong>🚫 Bloquear Usuário:</strong>
+        <p style="margin-top:8px;">Você também pode bloquear este usuário imediatamente. Ao bloquear, você não verá mais este usuário em nenhuma parte do sistema.</p>
+      </div>
+
+      <form method="POST" action="/block/<%= reportedUid %>" class="block-form">
+        <div class="action-buttons">
+          <button type="submit" class="btn btn--danger" onclick="return confirm('Tem certeza que deseja bloquear este usuário? Você não verá mais ele no sistema.')">
+            🚫 Bloquear Usuário
+          </button>
+          <a href="mailto:suporte.coup@gmail.com?subject=Denúncia de Usuário - <%= encodeURIComponent(reportedName) %>" class="mail-link">
+            📧 Abrir Cliente de Email
+          </a>
+          <a href="javascript:history.back()" class="btn">← Voltar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyEmail() {
+    const email = 'suporte.coup@gmail.com';
+    navigator.clipboard.writeText(email).then(() => {
+      const btn = event.target.closest('.copy-btn') || event.target;
+      const originalText = btn.textContent;
+      btn.textContent = '✓ Copiado!';
+      btn.style.background = '#10b981';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+      }, 2000);
+    }).catch(err => {
+      // Fallback para navegadores antigos
+      const textArea = document.createElement('textarea');
+      textArea.value = email;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        const btn = event.target.closest('.copy-btn') || event.target;
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Copiado!';
+        btn.style.background = '#10b981';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = '';
+        }, 2000);
+      } catch (err) {
+        alert('Não foi possível copiar. O email é: ' + email);
+      }
+      document.body.removeChild(textArea);
+    });
+  }
+</script>

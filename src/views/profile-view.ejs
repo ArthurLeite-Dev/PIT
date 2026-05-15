@@ -1,0 +1,371 @@
+<% layout('layout') -%>
+
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet"/>
+
+<style>
+  :root{
+    --bg-app:#0F1016;
+    --bg-card:#1E202D;
+    --txt-field:#778C8A;
+    --txt-light-green:#BDFFD3;
+    --txt-white-green:#E5FFF5;
+    --g-main:#39df79;
+    --g-ico:#04BF8A;
+    --r-lg:14px;
+    --r-md:10px;
+    --shadow-card:0 18px 38px rgba(0,0,0,.45);
+    --shadow-focus:0 0 0 3px rgba(72,222,141,.3);
+    --tr-fast:.15s ease;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;padding:0}
+
+  body{
+    min-height:100dvh;
+    background:var(--bg-app);
+    color:var(--txt-white-green);
+    font-family:"Asap",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .profile-overlay{
+    position:fixed;
+    inset:0;
+    background:var(--bg-app);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    z-index:9999;
+    isolation:isolate;
+    overflow-y:auto;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .profile-wrapper{
+    width:min(800px, 92vw);
+    margin:0 auto;
+  }
+
+  .profile-card{
+    background:var(--bg-card);
+    border-radius:var(--r-lg);
+    padding:clamp(22px,4vw,34px);
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+    position:relative;
+  }
+
+  .profile-header{
+    text-align:center;
+    margin-bottom:24px;
+  }
+
+  .profile-avatar{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    margin:0 auto 16px;
+    overflow:hidden;
+    border:3px solid var(--g-main);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#1b1d28;
+  }
+
+  .profile-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .profile-title{
+    font-family:"Barlow",sans-serif;
+    font-weight:700;
+    font-size:clamp(1.8rem,3vw,2.4rem);
+    color:var(--txt-white-green);
+    margin:8px 0;
+  }
+
+  .profile-subtitle{
+    color:var(--txt-light-green);
+    opacity:.9;
+    font-size:clamp(.92rem,1.9vw,1.02rem);
+  }
+
+  .section{
+    background:var(--bg-card);
+    border:1px solid rgba(229,255,245,.10);
+    border-radius:var(--r-lg);
+    padding:16px;
+    margin-bottom:16px;
+  }
+
+  .section__header{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;
+  }
+
+  .section__title{
+    font-family:"Barlow",sans-serif;
+    color:var(--txt-light-green);
+    font-weight:700;
+    letter-spacing:.2px;
+    margin:0;
+    font-size:16px;
+  }
+
+  .section__content{
+    color:var(--txt-white-green);
+    font-size:14px;
+    line-height:1.6;
+  }
+
+  .chip-list{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:8px;
+  }
+
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px 12px;
+    border-radius:999px;
+    border:1px solid rgba(229,255,245,.14);
+    color:var(--txt-light-green);
+    font-size:13px;
+  }
+
+  .btn{
+    --btn-bg: linear-gradient(135deg, var(--g-main), var(--g-ico));
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:12px 20px;
+    border-radius:999px;
+    border:1px solid rgba(72,222,141,.45);
+    background:var(--btn-bg);
+    color:var(--bg-card);
+    font-family:"Atkinson Hyperlegible",sans-serif;
+    font-weight:700;
+    letter-spacing:.4px;
+    cursor:pointer;
+    box-shadow:0 10px 22px rgba(72,222,141,.28), inset 0 -2px 0 rgba(0,0,0,.25);
+    transition:transform var(--tr-fast), box-shadow var(--tr-fast), filter var(--tr-fast);
+    min-height:40px;
+    text-decoration:none;
+  }
+
+  .btn:hover{
+    filter:brightness(1.06);
+  }
+
+  .btn:active{
+    transform:translateY(1px);
+  }
+
+  .btn--ghost{
+    background:transparent;
+    color:var(--txt-white-green);
+    border:1px solid rgba(229,255,245,.20);
+    box-shadow:none;
+  }
+
+  .btn--ghost:hover{
+    background:rgba(229,255,245,.06);
+  }
+
+  .actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:24px;
+    justify-content:center;
+  }
+
+  .btn--danger{
+    background:rgba(239, 68, 68, 0.15);
+    color:#ef4444;
+    border:1px solid rgba(239, 68, 68, 0.4);
+    box-shadow:0 4px 12px rgba(239, 68, 68, 0.2);
+  }
+
+  .btn--danger:hover{
+    background:rgba(239, 68, 68, 0.25);
+    border-color:rgba(239, 68, 68, 0.6);
+  }
+
+  .profile-actions-section{
+    background:var(--bg-app);
+    border:1px solid rgba(229,255,245,.10);
+    border-radius:var(--r-lg);
+    padding:20px;
+    margin-bottom:16px;
+    margin-top:8px;
+  }
+
+  .profile-actions-section .section__title{
+    margin-bottom:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .action-buttons-grid{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  .report-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 16px;
+    border-radius:8px;
+    background:rgba(239, 68, 68, 0.1);
+    border:1px solid rgba(239, 68, 68, 0.3);
+    color:#ef4444;
+    font-size:14px;
+    font-weight:600;
+    text-decoration:none;
+    transition:all var(--tr-fast);
+  }
+
+  .report-link:hover{
+    background:rgba(239, 68, 68, 0.2);
+    border-color:rgba(239, 68, 68, 0.5);
+    transform:translateY(-2px);
+  }
+</style>
+
+<div class="profile-overlay">
+  <div class="profile-wrapper">
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <img src="<%= player.photoUrl || '/images/avatares_players/' + (player.avatar || 'Ariel.png') %>" alt="<%= player.name %>">
+        </div>
+        <h1 class="profile-title"><%= player.name || 'Jogador' %></h1>
+        <% if (player.country) { %>
+          <p class="profile-subtitle">🌎 <%= player.country %></p>
+        <% } %>
+      </div>
+
+      <div class="section" aria-labelledby="sec-pais-title">
+        <div class="section__header">
+          <h2 id="sec-pais-title" class="section__title">País</h2>
+        </div>
+        <div class="section__content">
+          <%= player.country || 'Não informado' %>
+        </div>
+      </div>
+
+      <% if (player.languages && player.languages.length > 0) { %>
+      <div class="section" aria-labelledby="sec-idiomas-title">
+        <div class="section__header">
+          <h2 id="sec-idiomas-title" class="section__title">Idiomas</h2>
+        </div>
+        <div class="section__content">
+          <div class="chip-list">
+            <%
+              const languageMap = {
+                'pt-BR': 'Português (Brasil)',
+                'en': 'Inglês',
+                'es': 'Espanhol',
+                'fr': 'Francês',
+                'de': 'Alemão',
+                'ja': 'Japonês',
+                'ko': 'Coreano'
+              };
+              player.languages.forEach(function(lang) {
+                const langName = languageMap[lang] || lang;
+            %>
+              <span class="chip"><%= langName %></span>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <% if (player.platforms && player.platforms.length > 0) { %>
+      <div class="section" aria-labelledby="sec-plataformas-title">
+        <div class="section__header">
+          <h2 id="sec-plataformas-title" class="section__title">Plataformas</h2>
+        </div>
+        <div class="section__content">
+          <div class="chip-list">
+            <% player.platforms.forEach(function(platform) { %>
+              <span class="chip"><%= platform %></span>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <% if (player.favoriteGameIds && player.favoriteGameIds.length > 0) { %>
+      <div class="section" aria-labelledby="sec-jogos-title">
+        <div class="section__header">
+          <h2 id="sec-jogos-title" class="section__title">Jogos Favoritos</h2>
+        </div>
+        <div class="section__content">
+          <div class="chip-list">
+            <% player.favoriteGameIds.forEach(function(game) { %>
+              <span class="chip"><%= game %></span>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <% if (player.favoriteGenres && player.favoriteGenres.length > 0) { %>
+      <div class="section" aria-labelledby="sec-generos-title">
+        <div class="section__header">
+          <h2 id="sec-generos-title" class="section__title">Gêneros Favoritos</h2>
+        </div>
+        <div class="section__content">
+          <div class="chip-list">
+            <% player.favoriteGenres.forEach(function(genre) { %>
+              <span class="chip"><%= genre %></span>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- Seção de Ações (Apenas se não for o próprio perfil) -->
+      <% if (currentPlayer && currentPlayer.id !== player.id) { %>
+        <div class="profile-actions-section">
+          <h2 class="section__title">⚡ Ações</h2>
+          <div class="action-buttons-grid">
+            <% if (!isAlreadyFriend) { %>
+              <form action="/friends/add" method="POST" style="display:inline;">
+                <input type="hidden" name="friendUid" value="<%= player.authUid || player.id %>" />
+                <button type="submit" class="btn">➕ Adicionar como Amigo</button>
+              </form>
+            <% } %>
+            <a href="/block/report/<%= player.authUid || player.id %>" class="report-link">
+              <span>🚨</span>
+              <span>Denunciar e Bloquear</span>
+            </a>
+          </div>
+          <p style="color:var(--txt-field); font-size:12px; margin-top:12px; line-height:1.5;">
+            <strong>⚠️ Sobre a denúncia:</strong> Ao denunciar este usuário, ele será bloqueado automaticamente e você não verá mais ele no sistema. A denúncia será enviada ao suporte para análise.
+          </p>
+        </div>
+      <% } %>
+
+      <div class="actions">
+        <a href="/home" class="btn btn--ghost">← Voltar para Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+

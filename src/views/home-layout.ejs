@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title><%= title || "Co-Up — Home" %></title>
+    <!-- Tailwind CDN (rápido p/ dev; em prod, use build) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body style="background: #0F1016; color: #E5FFF5; min-height: 100vh;">
+    <main>
+      <%- body %>
+    </main>
+
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 hidden rounded-lg bg-black/90 px-4 py-2 text-white"></div>
+
+    <script>
+      window.showToast = (msg) => {
+        const el = document.getElementById('toast');
+        el.textContent = msg; el.classList.remove('hidden');
+        setTimeout(()=> el.classList.add('hidden'), 3000);
+      }
+    </script>
+  </body>
+</html>

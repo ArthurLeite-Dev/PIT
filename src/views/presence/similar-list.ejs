@@ -1,0 +1,221 @@
+<!-- src/views/presence/similar-list.ejs -->
+<style>
+.presence-section {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.presence-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.presence-section::-webkit-scrollbar-track {
+  background: #0F1016;
+  border-radius: 10px;
+}
+
+.presence-section::-webkit-scrollbar-thumb {
+  background: #39df79;
+  border-radius: 10px;
+}
+
+.presence-section::-webkit-scrollbar-thumb:hover {
+  background: #04BF8A;
+}
+
+.presence-widget {
+  background: #1E202D;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.presence-header {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(229, 255, 245, 0.1);
+}
+
+.presence-title {
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #E5FFF5;
+  margin: 0;
+}
+
+.presence-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.presence-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: rgba(229, 255, 245, 0.03);
+  border: 1px solid rgba(229, 255, 245, 0.08);
+  border-radius: 10px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.presence-item:hover {
+  background: rgba(57, 223, 121, 0.1);
+  border-color: rgba(57, 223, 121, 0.3);
+  transform: translateX(4px);
+}
+
+.presence-avatar {
+  position: relative;
+}
+
+.presence-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #39df79;
+  object-fit: cover;
+  display: block;
+}
+
+.online-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: #39df79;
+  border: 2px solid #1E202D;
+  border-radius: 50%;
+}
+
+.presence-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.presence-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #E5FFF5;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.presence-details {
+  font-size: 0.8rem;
+  color: #778C8A;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.presence-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #778C8A;
+}
+
+.presence-empty p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.presence-link {
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  color: inherit;
+}
+
+.presence-link:hover {
+  color: inherit;
+}
+
+.presence-link:visited {
+  color: inherit;
+}
+
+.presence-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.report-btn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  color: #ef4444;
+  font-size: 12px;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.report-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.presence-item-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+</style>
+
+<div class="presence-widget">
+  <div class="presence-header">
+    <h4 class="presence-title">🎮 Jogadores Similares</h4>
+  </div>
+  
+  <% if (players && players.length) { %>
+    <ul class="presence-list">
+      <% players.forEach((p) => { %>
+        <li class="presence-item">
+          <div class="presence-item-container">
+            <a href="/profile/<%= p.uid %>" class="presence-link" style="flex: 1; display: flex; align-items: center; gap: 12px;">
+              <div class="presence-avatar">
+                <img
+                  src="<%= p.photoUrl || '/default-avatar.png' %>"
+                  alt="<%= p.name || 'Jogador' %>"
+                />
+                <span class="online-dot" title="Online"></span>
+              </div>
+              <div class="presence-info">
+                <p class="presence-name"><%= p.name || 'Jogador' %></p>
+                <% if (p.favoriteGameIds && p.favoriteGameIds.length) { %>
+                  <p class="presence-details">🎮 <%= p.favoriteGameIds.slice(0, 2).join(', ') %></p>
+                <% } else if (p.platforms && p.platforms.length) { %>
+                  <p class="presence-details">💻 <%= p.platforms.join(', ') %></p>
+                <% } else { %>
+                  <p class="presence-details">Online agora</p>
+                <% } %>
+              </div>
+            </a>
+            <div class="presence-actions">
+              <a href="/block/report/<%= p.uid %>" class="report-btn" title="Denunciar e Bloquear">🚨</a>
+            </div>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <div class="presence-empty">
+      <p>Nenhum jogador similar online agora.</p>
+    </div>
+  <% } %>
+</div>

@@ -1,0 +1,54 @@
+<!-- src/views/presence/online-list.ejs -->
+<style>
+.report-btn-small {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  padding: 4px 6px;
+  cursor: pointer;
+  color: #ef4444;
+  font-size: 10px;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.report-btn-small:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+</style>
+<div class="presence-widget max-h-80 w-64 overflow-y-auto rounded-xl bg-white shadow-lg border border-slate-200 text-left">
+  <% if (players && players.length) { %>
+    <ul class="divide-y divide-slate-100">
+      <% players.forEach((p) => { %>
+        <li class="flex items-center gap-3 px-3 py-2 hover:bg-slate-50 transition">
+          <img
+            src="<%= p.photoUrl || '/default-avatar.png' %>"
+            alt="avatar"
+            class="h-8 w-8 rounded-full object-cover border border-slate-200"
+          />
+          <div class="flex-1">
+            <p class="font-medium text-sm text-slate-800 truncate"><%= p.name || 'Jogador' %></p>
+            <% if (p.favoriteGameIds && p.favoriteGameIds.length) { %>
+              <p class="text-xs text-slate-500 truncate">
+                🎮 <%= p.favoriteGameIds.slice(0, 2).join(', ') %>
+              </p>
+            <% } else if (p.platforms && p.platforms.length) { %>
+              <p class="text-xs text-slate-500 truncate">
+                💻 <%= p.platforms.join(', ') %>
+              </p>
+            <% } else { %>
+              <p class="text-xs text-slate-400">Online agora</p>
+            <% } %>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="/block/report/<%= p.uid %>" class="report-btn-small" title="Denunciar">🚨</a>
+            <div class="h-2 w-2 bg-green-500 rounded-full" title="Online"></div>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <div class="p-3 text-sm text-slate-500 text-center">Nenhum jogador online agora.</div>
+  <% } %>
+</div>

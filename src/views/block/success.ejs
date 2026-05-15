@@ -1,0 +1,110 @@
+<% layout('layout') -%>
+
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet"/>
+
+<style>
+  :root{
+    --bg-app:#0F1016;
+    --bg-card:#1E202D;
+    --txt-field:#778C8A;
+    --txt-light-green:#BDFFD3;
+    --txt-white-green:#E5FFF5;
+    --g-main:#39df79;
+    --g-ico:#04BF8A;
+    --r-lg:14px;
+    --r-md:10px;
+    --shadow-card:0 18px 38px rgba(0,0,0,.45);
+    --tr-fast:.15s ease;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;padding:0}
+
+  body{
+    min-height:100dvh;
+    background:var(--bg-app);
+    color:var(--txt-white-green);
+    font-family:"Asap",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:clamp(12px,3vw,24px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .success-card{
+    background:var(--bg-card);
+    border-radius:var(--r-lg);
+    padding:clamp(32px,4vw,48px);
+    box-shadow:var(--shadow-card);
+    text-align:center;
+    max-width:500px;
+    width:100%;
+  }
+
+  .success-icon{
+    font-size:4rem;
+    margin-bottom:24px;
+  }
+
+  .success-title{
+    font-family:"Barlow",sans-serif;
+    font-weight:700;
+    font-size:clamp(1.5rem,3vw,2rem);
+    color:var(--txt-white-green);
+    margin-bottom:16px;
+  }
+
+  .success-message{
+    color:var(--txt-field);
+    font-size:1rem;
+    line-height:1.6;
+    margin-bottom:32px;
+  }
+
+  .btn{
+    padding:12px 24px;
+    border-radius:999px;
+    border:none;
+    font-weight:700;
+    cursor:pointer;
+    font-family:"Atkinson Hyperlegible",sans-serif;
+    transition:var(--tr-fast);
+    text-decoration:none;
+    display:inline-block;
+    background:var(--g-main);
+    color:#0F1016;
+    font-size:14px;
+  }
+
+  .btn:hover{
+    background:#04BF8A;
+    transform:translateY(-2px);
+  }
+</style>
+
+<div class="success-card">
+  <div class="success-icon">✅</div>
+  <h1 class="success-title">
+    <%= typeof title !== 'undefined' ? title : 'Operação Realizada com Sucesso!' %>
+  </h1>
+  <p class="success-message">
+    <%= typeof message !== 'undefined' ? message : 'Operação realizada com sucesso!' %>
+  </p>
+  <% if (typeof title !== 'undefined' && title.toLowerCase().includes('bloqueado')) { %>
+    <!-- Mensagem adicional para bloqueio já incluída na mensagem principal -->
+  <% } else { %>
+    <p class="success-message" style="font-size:0.9rem; color:var(--txt-light-green);">
+      A denúncia foi enviada para o suporte. Obrigado por nos ajudar a manter a comunidade segura!
+    </p>
+  <% } %>
+  <a href="/home" class="btn">Voltar para Home</a>
+</div>
+
+<script>
+  // Auto-redirect após 5 segundos
+  setTimeout(() => {
+    window.location.href = '/home';
+  }, 5000);
+</script>

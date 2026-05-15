@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Onboarding - Perfil Gamer</title>
+
+  <!-- Fontes (mesmo set das telas anteriores) -->
+  <link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      /* Tema unificado do app */
+      --bg-app:#0F1016;     /* fundo da página */
+      --bg-card:#1E202D;    /* card principal */
+      --txt:#E5FFF5;        /* branco esverdeado */
+      --txt-muted:#778C8A;  /* placeholder/legenda */
+      --txt-soft:#BDFFD3;   /* clara esverdeada */
+
+      /* CTA / ícones */
+      --green:#39df79;
+      --green-2:#48DE8D;
+      --green-ico:#04BF8A;
+
+      /* UI */
+      --r-lg:14px;
+      --r-md:10px;
+      --shadow-card:0 18px 38px rgba(0,0,0,.45);
+      --shadow-focus:0 0 0 3px rgba(72,222,141,.3);
+
+      /* Larguras */
+      --maxw:880px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{min-height:100vh;margin:0}
+
+    /* ========= Overlay garante 1 fundo e 1 card visível ========= */
+    body{
+      font-family:"Asap",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+      color:var(--txt);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .onb-overlay{
+      position:fixed; inset:0;
+      background:var(--bg-app);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:flex-start;
+      gap:22px;
+      padding:clamp(12px,3vw,24px);
+      z-index:9999; isolation:isolate;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    /* ========= Logo central acima do card ========= */
+    .onb-logo{
+      display:block;
+      width:140px; max-width:30vw; height:auto;
+      margin:0 auto;
+      object-fit:contain;
+      filter:drop-shadow(0 6px 16px rgba(0,0,0,.25));
+    }
+    .onb-logo-fallback{
+      display:none; align-items:center; justify-content:center;
+      width:180px; height:48px; border-radius:10px;
+      background:linear-gradient(135deg,var(--green),var(--green-2));
+      color:var(--bg-card);
+      font-family:"Barlow",sans-serif; font-weight:700; letter-spacing:.5px;
+      margin:0 auto;
+    }
+
+    /* ========= Card principal ========= */
+    .onb-card{
+      width:100%;
+      max-width:var(--maxw);
+      background:var(--bg-card);
+      border-radius:var(--r-lg);
+      box-shadow:var(--shadow-card);
+      padding:clamp(18px,3.4vw,28px);
+      overflow:visible;
+      margin:auto 0;
+    }
+
+    /* Cabeçalho do card */
+    header h1{
+      margin:0 0 6px 0; font-size:clamp(1.2rem,2.2vw,1.6rem);
+      font-family:"Barlow",sans-serif; font-weight:700; color:var(--txt);
+      text-align:left;
+    }
+    header p{margin:0; color:var(--txt-soft); font-size:clamp(.9rem,1.6vw,1rem)}
+
+    /* Barra de progresso */
+    .progress-bar{
+      width:100%; height:8px; border-radius:999px; overflow:hidden;
+      background:#1b1d28; border:1px solid rgba(255,255,255,.06);
+      margin-top:12px;
+    }
+    .progress-fill{
+      height:100%;
+      background:linear-gradient(90deg,var(--green),var(--green-2));
+      border-radius:999px;
+      transition:width .3s ease;
+    }
+
+    /* Grid do conteúdo (one column -> two areas em telas maiores se quiser) */
+    .grid{
+      display:grid; grid-template-columns:1fr; gap:clamp(14px,2.8vw,20px);
+    }
+
+    /* Form / Campos */
+    form{ display:flex; flex-direction:column; gap:14px; margin-top:12px; }
+    
+    @media (max-width: 768px) {
+      .onb-overlay {
+        justify-content: flex-start;
+        padding-top: 40px;
+        padding-bottom: 40px;
+      }
+      
+      .onb-card {
+        margin-bottom: 40px;
+      }
+    }
+    label{ display:block; font-size:.92rem; color:var(--txt-soft); margin-bottom:6px; }
+    .field{ display:block; width:100%; }
+    select, input[type="text"], input[type="search"]{
+      width:100%; padding:12px 14px;
+      background:#1b1d28; color:var(--txt);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--r-md);
+      outline:none; transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    select:focus, input[type="text"]:focus, input[type="search"]:focus{
+      border-color:transparent; box-shadow:var(--shadow-focus); background:#1a1c26;
+    }
+
+    /* Chips */
+    .chips{ display:flex; flex-wrap:wrap; gap:8px }
+    .chip, .style-box{
+      padding:8px 12px; border-radius:999px; cursor:pointer; user-select:none;
+      background:transparent; border:1px solid rgba(255,255,255,.10);
+      color:var(--txt-soft); font-size:.92rem; transition:filter .2s ease, background .2s ease, border-color .2s ease;
+    }
+    .chip.selected{
+      background:linear-gradient(90deg, rgba(72,222,141,.10), rgba(72,222,141,.06));
+      border-color:var(--green-2); color:#071316; font-weight:700;
+    }
+
+    /* Style boxes (estilos de jogo) */
+    .style-box.selected{
+      background:linear-gradient(90deg, rgba(72,222,141,.10), rgba(72,222,141,.06));
+      border-color:var(--green-2); color:#071316; font-weight:700;
+    }
+
+    /* Summary card */
+    .summary-card{
+      background:#1b1d28; border-radius:12px; padding:16px;
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .summary-item{ margin-bottom:10px; }
+    .summary-label{ color:var(--green-2); font-weight:700; font-size:.9rem; }
+    .summary-value{ color:var(--txt); }
+    .avatar-summary{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .avatar-summary img{ border-radius:50%; width:60px; height:60px; object-fit:cover; display:block; }
+
+    /* Botões navegação/ação */
+    .nav-buttons{ display:flex; gap:10px; margin-top:10px; justify-content:space-between; }
+    .nav-buttons button{
+      padding:10px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.06);
+      background:#1b1d28; color:var(--txt-soft); cursor:pointer;
+    }
+    .nav-buttons .next{
+      background:linear-gradient(135deg,var(--green),var(--green-2));
+      color:var(--bg-card); border-color:rgba(72,222,141,.45); font-weight:700;
+      box-shadow:0 8px 20px rgba(12,57,49,.18);
+    }
+
+    /* Área lateral (mantida, mas por padrão oculta em mobile) */
+    .sidebar{
+      display:none; /* pode habilitar em layouts maiores se quiser dividir em 2 colunas */
+      background:#1b1d28; padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,.06);
+    }
+    .preview{ display:flex; gap:12px; align-items:center; margin-top:6px; }
+    .preview .big{ height:86px; width:86px; border-radius:999px; border:3px solid rgba(72,222,141,.06); overflow:hidden; }
+    .preview img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    /* Modal */
+    .modal{
+      position:fixed; inset:0; background:rgba(0,0,0,.7);
+      display:none; align-items:center; justify-content:center; z-index:10000;
+    }
+    .modal-content{
+      background:var(--bg-card); padding:20px; border-radius:12px;
+      max-width:400px; width:90%; border:1px solid rgba(255,255,255,.06);
+    }
+    .avatar-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .avatar{ height:72px; width:72px; border-radius:12px; overflow:hidden; display:flex; align-items:center; justify-content:center;
+      border:2px solid transparent; background:#1a1c26; cursor:pointer; }
+    .avatar.selected{ border-color:var(--green-2); box-shadow:0 8px 24px rgba(72,222,141,.06) inset; }
+    .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    /* Steps */
+    .step{ display:none; }
+    .step.active{ display:block; }
+  </style>
+</head>
+<body>
+
+  <!-- FUNDO ÚNICO + LOGO + CARD -->
+  <div class="onb-overlay">
+
+    <!-- Logo com fallback de paths -->
+    <img id="appLogo" class="onb-logo" src="/src/views/images/couplogo.png" alt="Logo Co-Up" loading="eager" decoding="async"/>
+    <div id="logoFallback" class="onb-logo-fallback">Co-Up</div>
+
+    <main class="onb-card" role="main" aria-labelledby="page-title">
+      <div class="grid">
+        <!-- ===== Conteúdo principal (form) ===== -->
+        <section>
+          <header>
+            <h1 id="page-title">Completar perfil</h1>
+            <p>Escolha país, idiomas, jogos e outras preferências.</p>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill" style="width:14.28%;"></div>
+            </div>
+          </header>
+
+          <form id="onboardingForm" method="post" action="/onboarding" autocomplete="off" novalidate>
+            <input type="hidden" name="avatar" id="avatarInput" />
+
+            <!-- Step 1: País -->
+            <div class="step active" id="step1">
+              <div>
+                <label for="country">País</label>
+                <select id="country" name="country" class="field">
+                  <option value="">Selecione um país</option>
+                  <option value="BR">Brasil (BR)</option>
+                  <option value="US">Estados Unidos (US)</option>
+                  <option value="PT">Portugal (PT)</option>
+                  <option value="ES">Espanha (ES)</option>
+                  <option value="FR">França (FR)</option>
+                  <option value="DE">Alemanha (DE)</option>
+                  <option value="IT">Itália (IT)</option>
+                  <option value="JP">Japão (JP)</option>
+                  <option value="KR">Coreia do Sul (KR)</option>
+                  <option value="CN">China (CN)</option>
+                  <option value="RU">Rússia (RU)</option>
+                  <option value="AU">Austrália (AU)</option>
+                  <option value="CA">Canadá (CA)</option>
+                  <option value="MX">México (MX)</option>
+                  <option value="AR">Argentina (AR)</option>
+                  <option value="GB">Reino Unido (GB)</option>
+                  <option value="IN">Índia (IN)</option>
+                  <option value="ZA">África do Sul (ZA)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Step 2: Idiomas -->
+            <div class="step" id="step2">
+              <div>
+                <label for="languages">Idiomas</label>
+                <div class="chips" id="languagesChips"></div>
+                <input type="hidden" name="languages" id="languagesInput" />
+              </div>
+            </div>
+
+            <!-- Step 3: Jogos favoritos -->
+            <div class="step" id="step3">
+              <div>
+                <label>Jogos favoritos</label>
+                <div class="chips scroll-area" id="gamesChips">
+                  <button type="button" class="chip" data-value="Apex Legends">Apex Legends</button>
+                  <button type="button" class="chip" data-value="Rainbow Six Siege">Rainbow Six Siege</button>
+                  <button type="button" class="chip" data-value="Destiny 2">Destiny 2</button>
+                  <button type="button" class="chip" data-value="Paladins">Paladins</button>
+                  <button type="button" class="chip" data-value="Warframe">Warframe</button>
+                  <button type="button" class="chip" data-value="Ark: Survival Evolved">Ark: Survival Evolved</button>
+                  <button type="button" class="chip" data-value="Rust">Rust</button>
+                  <button type="button" class="chip" data-value="Conan Exiles">Conan Exiles</button>
+                  <button type="button" class="chip" data-value="No Man's Sky">No Man's Sky</button>
+                  <button type="button" class="chip" data-value="The Forest / Sons of the Forest">The Forest / Sons of the Forest</button>
+                  <button type="button" class="chip" data-value="Genshin Impact">Genshin Impact</button>
+                  <button type="button" class="chip" data-value="Elden Ring (modo online)">Elden Ring (modo online)</button>
+                  <button type="button" class="chip" data-value="Monster Hunter: World">Monster Hunter: World</button>
+                  <button type="button" class="chip" data-value="Dauntless">Dauntless</button>
+                  <button type="button" class="chip" data-value="Fortnite">Fortnite</button>
+                  <button type="button" class="chip" data-value="The Sims 4">The Sims 4</button>
+                  <button type="button" class="chip" data-value="Gartic Phone">Gartic Phone</button>
+                  <button type="button" class="chip" data-value="Among Us">Among Us</button>
+                  <button type="button" class="chip" data-value="Fall Guys">Fall Guys</button>
+                  <button type="button" class="chip" data-value="Forza Horizon 5">Forza Horizon 5</button>
+                  <button type="button" class="chip" data-value="Need for Speed: Heat">Need for Speed: Heat</button>
+                  <button type="button" class="chip" data-value="Rocket League">Rocket League</button>
+                  <button type="button" class="chip" data-value="Overwatch 2">Overwatch 2</button>
+                  <button type="button" class="chip" data-value="Valorant">Valorant</button>
+                  <button type="button" class="chip" data-value="Minecraft">Minecraft</button>
+                  <button type="button" class="chip" data-value="CSGO">CSGO</button>
+                  <button type="button" class="chip" data-value="Red Dead Redemption 2">Red Dead Redemption 2</button>
+                  <button type="button" class="chip" data-value="Street Fighter">Street Fighter</button>
+                  <button type="button" class="chip" data-value="Mortal Kombat">Mortal Kombat</button>
+                  <button type="button" class="chip" data-value="FIFA">FIFA</button>
+                  <button type="button" class="chip" data-value="Payday">Payday</button>
+                  <button type="button" class="chip" data-value="Peak">Peak</button>
+                  <button type="button" class="chip" data-value="Blue Protocol">Blue Protocol</button>
+                  <button type="button" class="chip" data-value="Roblox">Roblox</button>
+                  <button type="button" class="chip" data-value="League Of Legends">League Of Legends</button>
+                  <button type="button" class="chip" data-value="Dota 2">Dota 2</button>
+                </div>
+                <input type="hidden" name="games" id="gamesInput" />
+              </div>
+            </div>
+
+            <!-- Step 4: Plataformas -->
+            <div class="step" id="step4">
+              <div>
+                <label for="platforms">Plataformas</label>
+                <div class="chips" id="platformChips">
+                  <button type="button" class="chip" data-value="pc">PC</button>
+                  <button type="button" class="chip" data-value="xbox">Xbox</button>
+                  <button type="button" class="chip" data-value="playstation">PlayStation</button>
+                  <button type="button" class="chip" data-value="switch">Switch</button>
+                  <button type="button" class="chip" data-value="mobile">Mobile</button>
+                </div>
+                <input type="hidden" name="platforms" id="platformsInput" />
+              </div>
+            </div>
+
+            <!-- Step 5: Gêneros favoritos -->
+            <div class="step" id="step5">
+              <div>
+                <label for="genres">Gêneros favoritos</label>
+                <div class="chips" id="genresChips">
+                  <button type="button" class="chip" data-value="Ação">Ação</button>
+                  <button type="button" class="chip" data-value="Aventura">Aventura</button>
+                  <button type="button" class="chip" data-value="RPG">RPG</button>
+                  <button type="button" class="chip" data-value="Estratégia">Estratégia</button>
+                  <button type="button" class="chip" data-value="Puzzle">Puzzle</button>
+                  <button type="button" class="chip" data-value="Simulação">Simulação</button>
+                  <button type="button" class="chip" data-value="Esportes">Esportes</button>
+                  <button type="button" class="chip" data-value="Corrida">Corrida</button>
+                  <button type="button" class="chip" data-value="Terror">Terror</button>
+                </div>
+                <input type="hidden" name="genres" id="genresInput" />
+              </div>
+            </div>
+
+            <!-- Step 6: Estilos de jogo -->
+            <div class="step" id="step6">
+              <div>
+                <label for="styles">Estilo de jogo</label>
+                <div class="chips" id="stylesContainer">
+                  <button type="button" class="style-box" data-value="Competitivo 🏆">Competitivo 🏆</button>
+                  <button type="button" class="style-box" data-value="Casual 🎮">Casual 🎮</button>
+                  <button type="button" class="style-box" data-value="FPS 🔫">FPS 🔫</button>
+                  <button type="button" class="style-box" data-value="MOBA 🐉">MOBA 🐉</button>
+                  <button type="button" class="style-box" data-value="RPG ⚔️">RPG ⚔️</button>
+                  <button type="button" class="style-box" data-value="Estratégia 🧠">Estratégia 🧠</button>
+                  <button type="button" class="style-box" data-value="Battle Royale 💣">Battle Royale 💣</button>
+                </div>
+                <input type="hidden" name="styles" id="stylesInput" />
+              </div>
+            </div>
+
+            <!-- Step 7: Summary -->
+            <div class="step" id="step7">
+              <div class="summary-card">
+                <h3 style="margin:0 0 16px 0;color:var(--green-2);font-family:'Barlow',sans-serif">Confirme seu perfil</h3>
+                <div class="avatar-summary">
+                  <img id="summaryAvatar" src="" alt="Avatar" />
+                  <div>
+                    <div class="summary-label">Avatar</div>
+                    <div class="summary-value" id="summaryAvatarName">Nenhum</div>
+                  </div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">País</div>
+                  <div class="summary-value" id="summaryCountry">-</div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Idiomas</div>
+                  <div class="summary-value" id="summaryLanguages">-</div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Jogos favoritos</div>
+                  <div class="summary-value" id="summaryGames">-</div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Plataformas</div>
+                  <div class="summary-value" id="summaryPlatforms">-</div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Gêneros favoritos</div>
+                  <div class="summary-value" id="summaryGenres">-</div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Estilos de jogo</div>
+                  <div class="summary-value" id="summaryStyles">-</div>
+                </div>
+                <button type="button" id="selectAvatarBtn" class="nav-buttons next" style="border:none;padding:12px 16px;border-radius:12px;display:inline-block;">Selecionar Avatar</button>
+              </div>
+            </div>
+
+            <!-- Navegação -->
+            <div class="nav-buttons">
+              <button type="button" class="chip" id="resetBtn">Limpar</button>
+              <button type="button" id="prevBtn">Voltar</button>
+              <button type="button" id="nextBtn" class="next">Próximo</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Sidebar (mantida) -->
+        <aside class="sidebar">
+          <div>
+            <label>Escolha um avatar</label>
+            <div class="muted">Selecione entre as opções (você pode trocar depois).</div>
+          </div>
+
+          <button type="button" id="openAvatarModal" class="nav-buttons next" style="border:none;padding:12px 16px;border-radius:12px;display:inline-block;">Selecionar Avatar</button>
+
+          <div class="preview">
+            <div class="big" id="avatarPreview" aria-hidden="true">
+              <img src="" alt="Avatar selecionado" id="avatarPreviewImg"/>
+            </div>
+            <div>
+              <div class="muted">Avatar selecionado</div>
+              <div id="selectedAvatarName" style="font-weight:700;margin-top:6px">Nenhum</div>
+            </div>
+          </div>
+
+          <div class="muted" style="margin-top:6px">Você pode trocar os arquivos de avatar depois — substitua os <code>data-src</code> pelos URLs das imagens reais.</div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal de Avatares -->
+  <div id="avatarModal" class="modal">
+    <div class="modal-content">
+      <h3 style="margin:0 0 16px 0;color:var(--green-2);font-family:'Barlow',sans-serif">Escolha um Avatar</h3>
+      <div class="avatar-grid" id="modalAvatarGrid"></div>
+      <button type="button" id="closeAvatarModal" class="chip" style="margin-top:16px">Fechar</button>
+    </div>
+  </div>
+
+  <script>
+    /* ============================
+       Dados e helpers (originais)
+       ============================ */
+    const languages = ['pt-BR','en','es','fr','de','ja','ko'];
+    const styleOptions = ['Competitivo 🏆','Casual 🎮','FPS 🔫','MOBA 🐉','RPG ⚔️','Estratégia 🧠','Battle Royale 💣'];
+    const avatars = [
+      { value: 'Ariel.png', src: '/images/avatares_players/Ariel.png' },
+      { value: 'Dé.png', src: '/images/avatares_players/Dé.png' },
+      { value: 'Feliciano.png', src: '/images/avatares_players/Feliciano.png' },
+      { value: 'Laurinha.jpg', src: '/images/avatares_players/Laurinha.jpg' },
+      { value: 'Leite.png', src: '/images/avatares_players/Leite.png' },
+      { value: 'Padilha.jpg', src: '/images/avatares_players/Padilha.jpg' }
+    ];
+    const $ = q => document.querySelector(q);
+    const $$ = q => Array.from(document.querySelectorAll(q));
+
+    /* ========= Logo fallback (mesmo das outras telas) ========= */
+    (function ensureLogoLoads(){
+      const img = document.getElementById('appLogo');
+      const fallback = document.getElementById('logoFallback');
+      if(!img) return;
+      const candidates = [
+        "/src/views/images/couplogo.png",
+        "/images/couplogo.png",
+        "images/couplogo.png"
+      ];
+      let i = 0;
+      function next(){ if(i>=candidates.length){ fallback.style.display='flex'; img.style.display='none'; return; } img.src = candidates[i++]; }
+      img.addEventListener('error', next);
+    })();
+
+    /* ========= Refs de UI ========= */
+    const languagesChips = $('#languagesChips');
+    const languagesInput = $('#languagesInput');
+    const platformChips = $('#platformChips');
+    const platformsInput = $('#platformsInput');
+    const gamesChips = $('#gamesChips');
+    const gamesInput = $('#gamesInput');
+    const stylesContainer = $('#stylesContainer');
+    const stylesInput = $('#stylesInput');
+    const genresChips = $('#genresChips');
+    const genresInput = $('#genresInput');
+
+    const modalAvatarGrid = $('#modalAvatarGrid');
+    const avatarPreviewImg = $('#avatarPreviewImg');
+    const selectedAvatarName = $('#selectedAvatarName');
+    const selectAvatarBtn = $('#selectAvatarBtn');
+    const closeAvatarModal = $('#closeAvatarModal');
+    const avatarModal = $('#avatarModal');
+
+    /* ========= Multi-step ========= */
+    let currentStep = 0;
+    const steps = $$('.step');
+    const totalSteps = steps.length;
+    const progressFill = $('#progressFill');
+    const prevBtn = $('#prevBtn');
+    const nextBtn = $('#nextBtn');
+
+    function showStep(stepIndex) {
+      steps.forEach((step, index) => step.classList.toggle('active', index === stepIndex));
+      const progress = ((stepIndex + 1) / totalSteps) * 100;
+      progressFill.style.width = progress + '%';
+      prevBtn.style.display = stepIndex === 0 ? 'none' : 'inline-block';
+      nextBtn.textContent = stepIndex === totalSteps - 1 ? 'Confirmar' : 'Próximo';
+      nextBtn.classList.toggle('next', stepIndex !== totalSteps - 1);
+      if (stepIndex === totalSteps - 1) populateSummary();
+    }
+
+    function validateStep(stepIndex) {
+      if (stepIndex === 0) {
+        if (!$('#country').value) { alert('Por favor, selecione um país.'); return false; }
+      } else if (stepIndex === 1) {
+        if ($$('.chip.selected').filter(c => c.parentElement === languagesChips).length === 0) { alert('Selecione pelo menos um idioma.'); return false; }
+      } else if (stepIndex === 2) {
+        if (gamesChips.querySelectorAll('.chip.selected').length === 0) { alert('Selecione pelo menos um jogo.'); return false; }
+      } else if (stepIndex === 3) {
+        if (platformChips.querySelectorAll('.chip.selected').length === 0) { alert('Selecione pelo menos uma plataforma.'); return false; }
+      } else if (stepIndex === 4) {
+        if (genresChips.querySelectorAll('.chip.selected').length === 0) { alert('Selecione pelo menos um gênero.'); return false; }
+      } else if (stepIndex === 5) {
+        if (stylesContainer.querySelectorAll('.style-box.selected').length === 0) { alert('Selecione pelo menos um estilo.'); return false; }
+      }
+      return true;
+    }
+
+    prevBtn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; showStep(currentStep); } });
+    nextBtn.addEventListener('click', () => {
+      if (currentStep < totalSteps - 1) { if (validateStep(currentStep)) { currentStep++; showStep(currentStep); } }
+      else { syncAllInputs(); $('#onboardingForm').submit(); }
+    });
+
+    /* Mapeamento de idiomas */
+    const languageMap = {
+      'pt-BR': 'Português (Brasil)',
+      'en': 'Inglês',
+      'es': 'Espanhol',
+      'fr': 'Francês',
+      'de': 'Alemão',
+      'ja': 'Japonês',
+      'ko': 'Coreano'
+    };
+
+    function syncAllInputs(){ syncLanguages(); syncPlatforms(); syncGames(); syncGenres(); syncStyles(); }
+    function populateSummary(){
+      $('#summaryCountry').textContent = $('#country').options[$('#country').selectedIndex].text || '-';
+      const langCodes = (languagesInput.value||'').split(',').filter(Boolean);
+      const langNames = langCodes.map(code => languageMap[code] || code).join(', ');
+      $('#summaryLanguages').textContent = langNames || '-';
+      $('#summaryGames').textContent     = (gamesInput.value||'').split(',').filter(Boolean).join(', ') || '-';
+      $('#summaryPlatforms').textContent = (platformsInput.value||'').split(',').filter(Boolean).join(', ') || '-';
+      $('#summaryGenres').textContent    = (genresInput.value||'').split(',').filter(Boolean).join(', ') || '-';
+      $('#summaryStyles').textContent    = (stylesInput.value||'').split(',').filter(Boolean).join(', ') || '-';
+      $('#summaryAvatar').src = avatarPreviewImg.src || '';
+      $('#summaryAvatarName').textContent = selectedAvatarName.textContent || 'Nenhum';
+    }
+
+    /* Idiomas com mapeamento */
+    languages.forEach(lang => {
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'chip'; btn.textContent = languageMap[lang] || lang; btn.dataset.value = lang;
+      btn.addEventListener('click', () => { btn.classList.toggle('selected'); syncLanguages(); });
+      languagesChips.appendChild(btn);
+    });
+    function syncLanguages(){ languagesInput.value = $$('.chip.selected').filter(c => c.parentElement === languagesChips).map(b => b.dataset.value).join(','); }
+
+    /* Plataformas */
+    function syncPlatforms(){ platformsInput.value = Array.from(platformChips.querySelectorAll('.chip.selected')).map(x => x.dataset.value).join(','); }
+    platformChips.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { b.classList.toggle('selected'); syncPlatforms(); }));
+
+    /* Gêneros */
+    function syncGenres(){ genresInput.value = Array.from(genresChips.querySelectorAll('.chip.selected')).map(x => x.dataset.value).join(','); }
+    genresChips.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { b.classList.toggle('selected'); syncGenres(); }));
+
+    /* Estilos */
+    function syncStyles(){ stylesInput.value = Array.from(stylesContainer.querySelectorAll('.style-box.selected')).map(b => b.dataset.value).join(','); }
+    stylesContainer.querySelectorAll('.style-box').forEach(btn => btn.addEventListener('click', () => { btn.classList.toggle('selected'); syncStyles(); }));
+
+    /* Jogos */
+    function syncGames(){ gamesInput.value = Array.from(gamesChips.querySelectorAll('.chip.selected')).map(x => x.dataset.value).join(','); }
+    gamesChips.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => { b.classList.toggle('selected'); syncGames(); }));
+
+    /* Reset */
+    $('#resetBtn').addEventListener('click', () => {
+      $('#onboardingForm').reset();
+      $$('.chip.selected').forEach(c => c.classList.remove('selected'));
+      $$('.style-box.selected').forEach(s => s.classList.remove('selected'));
+      gamesInput.value = platformsInput.value = languagesInput.value = stylesInput.value = genresInput.value = '';
+      avatarPreviewImg.src = ''; selectedAvatarName.textContent = 'Nenhum';
+    });
+
+    /* Submit (sincroniza estados finais) */
+    $('#onboardingForm').addEventListener('submit', () => { syncAllInputs(); });
+
+    /* Modal de Avatar */
+
+    function populateModalAvatars() {
+      modalAvatarGrid.innerHTML = '';
+      avatars.forEach(avatar => {
+        const div = document.createElement('div');
+        div.className = 'avatar'; div.dataset.value = avatar.value; div.dataset.src = avatar.src;
+        const img = document.createElement('img'); img.src = avatar.src; img.alt = avatar.value.replace(/\.(png|jpg)$/,'');
+        div.appendChild(img);
+        div.addEventListener('click', () => {
+          modalAvatarGrid.querySelectorAll('.avatar').forEach(x => x.classList.remove('selected'));
+          div.classList.add('selected');
+          $('#avatarPreviewImg').src = avatar.src;
+          $('#selectedAvatarName').textContent = avatar.value.replace(/\.(png|jpg)$/,'');
+          $('#avatarInput').value = avatar.value;
+          $('#summaryAvatar').src = avatar.src;
+          $('#summaryAvatarName').textContent = avatar.value.replace(/\.(png|jpg)$/,'');
+          avatarModal.style.display = 'none';
+        });
+        modalAvatarGrid.appendChild(div);
+      });
+    }
+    document.getElementById('selectAvatarBtn').addEventListener('click', () => { populateModalAvatars(); avatarModal.style.display = 'flex'; });
+    document.getElementById('openAvatarModal')?.addEventListener('click', () => { populateModalAvatars(); avatarModal.style.display = 'flex'; });
+    document.getElementById('closeAvatarModal').addEventListener('click', () => { avatarModal.style.display = 'none'; });
+    avatarModal.addEventListener('click', (e) => { if (e.target === avatarModal) avatarModal.style.display = 'none'; });
+
+    /* Inicialização */
+    showStep(0);
+  </script>
+</body>
+</html>
