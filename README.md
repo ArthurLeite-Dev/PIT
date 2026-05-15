@@ -7,7 +7,6 @@
 ## 📋 Índice
 
 - [Sobre o Projeto](#-sobre-o-projeto)
-- [Integrantes](#-integrantes)
 - [Tecnologias](#-tecnologias)
 - [Pré-requisitos](#-pré-requisitos)
 - [Instalação](#-instalação)
@@ -36,21 +35,6 @@ O **Co-Up** é uma plataforma web completa que promove engajamento social, troca
 - ✅ Interface responsiva e moderna
 - 🚧 Login com Google (planejado, **não implementado**)
 - 🚧 Sistema de notificações (planejado, **não implementado**)
-
----
-
-## 👥 Integrantes
-
-| Nome                                | Matrícula |
-|-------------------------------------|-----------|
-| André Sette Camara Pereira          | 22300201  |
-| Ariel Calebe Carneiro Martins       | 22300066  |
-| Arthur da Silva Leite               | 22301976  |
-| João Vitor Padilha Ferreira         | 22300503  |
-| João Vitor Feliciano Pires          | 22402837  |
-| Laura Ormy Santos Di Francesco      | 22301763  |
-
-**Turma:** 3A2
 
 ---
 
@@ -95,7 +79,7 @@ O **Co-Up** é uma plataforma web completa que promove engajamento social, troca
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/Ariel-Calebe/Pit.git
+git clone https://github.com/ArthurLeite-Dev/PIT.git
 cd Pit-main
 ```
 
@@ -516,7 +500,7 @@ A interface foi desenvolvida com foco em:
 
 ## 📄 Licença
 
-Este projeto foi desenvolvido como trabalho acadêmico para a turma 3A2.
+Este projeto foi desenvolvido como trabalho acadêmico para a turma 3A2, 2025, COTEMIG.
 
 ---
 
