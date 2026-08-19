@@ -1,4 +1,5 @@
 # 🎮 Co-Up: Play Better, Play Together
+projeto apresentado no Minas Summit
 
 > Plataforma online voltada para o público gamer, oferecendo um ambiente digital onde os usuários possam se conectar, interagir e formar comunidades. O site funciona como um ponto de encontro virtual, permitindo que jogadores de diferentes perfis e regiões se encontrem, conversem, compartilhem experiências e desenvolvam relações sociais em torno de interesses comuns relacionados a jogos eletrônicos.
 
